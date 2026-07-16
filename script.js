@@ -298,6 +298,16 @@ if (carouselInner) {
     });
 }
 
+// ── Objective cards: click to reveal info ──
+document.querySelectorAll('.paper-emulsion').forEach(el => {
+    el.addEventListener('click', (e) => {
+        const card = el.closest('.objective-card');
+        if (card) {
+            card.classList.toggle('expanded');
+        }
+    });
+});
+
 // ── Image fallback ──
 document.querySelectorAll('[style*="background-image"]').forEach(el => {
     const url = (el.style.backgroundImage.match(/url\("?(.+?)"?\)/) || [])[1];

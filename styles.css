@@ -1051,29 +1051,33 @@ nav {
 .photo-paper {
     position: relative;
     background: #151515;
-    padding: 0.6rem 0.6rem 1rem;
     border-radius: 2px;
     overflow: hidden;
+    cursor: pointer;
     transition: transform .4s, box-shadow .4s;
 }
 .objective-card:hover .photo-paper {
-    transform: translateY(-6px) rotateZ(-0.5deg);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(198,40,40,0.08);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px rgba(0,0,0,0.4);
 }
-/* Emulsion / image area */
+/* Emulsion / image area - clickable trigger */
 .paper-emulsion {
     position: relative;
     aspect-ratio: 4 / 3;
     overflow: hidden;
-    margin-bottom: 0.8rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
 }
 .emulsion-bg {
     position: absolute;
     inset: 0;
     opacity: 0.4;
+    transition: opacity .4s;
+}
+.paper-emulsion:hover .emulsion-bg {
+    opacity: 0.55;
 }
 .paper-emulsion svg {
     width: 32px;
@@ -1081,15 +1085,42 @@ nav {
     color: rgba(240,240,245,0.15);
     position: relative;
     z-index: 1;
+    transition: color .4s, transform .4s;
 }
-/* Paper info area */
+.paper-emulsion:hover svg {
+    color: rgba(240,240,245,0.25);
+    transform: scale(1.08);
+}
+/* Fold corner hint */
+.paper-fold {
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 20px; height: 20px;
+    background: linear-gradient(135deg, transparent 50%, rgba(198,40,40,0.3) 50%);
+    z-index: 2;
+    transition: opacity .4s;
+}
+.paper-emulsion:hover .paper-fold {
+    opacity: 0.6;
+}
+/* Paper info - hidden by default */
 .paper-info {
-    padding: 0 0.4rem;
+    padding: 0 0.8rem;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height .5s cubic-bezier(0.16, 1, 0.3, 1), opacity .4s ease, padding .4s ease;
+}
+.objective-card.expanded .paper-info {
+    max-height: 120px;
+    opacity: 1;
+    padding: 0 0.8rem 1rem;
 }
 .paper-info h3 {
     font-size: 0.9rem;
     margin-bottom: 0.3rem;
     letter-spacing: -0.01em;
+    padding-top: 0.8rem;
 }
 .paper-info p {
     color: #555555;
@@ -1097,54 +1128,30 @@ nav {
     line-height: 1.5;
 }
 
-/* ── Photo developing reveal animation ── */
+/* ── Photo reveal animation on scroll ── */
 .photo-paper {
     opacity: 0;
-    transform: translateY(20px) scale(0.97);
+    transform: translateY(15px) scale(0.98);
     transition: opacity .5s, transform .5s, box-shadow .4s, transform .4s;
 }
 .objective-card.visible .photo-paper {
     opacity: 1;
     transform: translateY(0) scale(1);
 }
-.objective-card.visible .paper-emulsion::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    animation: developWash 1s ease forwards;
-    pointer-events: none;
-}
-@keyframes developWash {
-    0% { background: linear-gradient(135deg, rgba(240,240,245,0.5), rgba(240,240,245,0.3)); opacity: 1; }
-    30% { background: linear-gradient(135deg, rgba(240,240,245,0.15), rgba(198,40,40,0.1)); opacity: 0.6; }
-    60% { background: linear-gradient(135deg, transparent, rgba(198,40,40,0.05)); opacity: 0.3; }
-    100% { background: transparent; opacity: 0; }
-}
 .objective-card.visible .paper-emulsion svg {
-    animation: emulsionAppear .8s ease forwards;
+    animation: emulsionAppear .7s ease forwards;
 }
 @keyframes emulsionAppear {
-    0% { opacity: 0; transform: scale(0.5) rotate(-5deg); filter: saturate(0) brightness(1.5); }
-    50% { opacity: 0.5; transform: scale(1.1) rotate(2deg); filter: saturate(0.3) brightness(1.2); }
-    100% { opacity: 1; transform: scale(1) rotate(0deg); filter: saturate(1) brightness(1); }
-}
-.objective-card.visible .paper-info h3,
-.objective-card.visible .paper-info p {
-    animation: paperTextReveal .6s ease forwards;
-}
-.objective-card.visible .paper-info h3 { animation-delay: 0.3s; opacity: 0; }
-.objective-card.visible .paper-info p { animation-delay: 0.45s; opacity: 0; }
-@keyframes paperTextReveal {
-    0% { opacity: 0; filter: blur(4px); }
-    100% { opacity: 1; filter: blur(0); }
+    0% { opacity: 0; transform: scale(0.6); filter: saturate(0) brightness(1.4); }
+    60% { opacity: 0.7; transform: scale(1.05); filter: saturate(0.5) brightness(1.1); }
+    100% { opacity: 1; transform: scale(1); filter: saturate(1) brightness(1); }
 }
 
 /* Stagger */
 .objective-card:nth-child(1) .photo-paper { transition-delay: 0s; }
-.objective-card:nth-child(2) .photo-paper { transition-delay: 0.1s; }
-.objective-card:nth-child(3) .photo-paper { transition-delay: 0.2s; }
-.objective-card:nth-child(4) .photo-paper { transition-delay: 0.3s; }
+.objective-card:nth-child(2) .photo-paper { transition-delay: 0.08s; }
+.objective-card:nth-child(3) .photo-paper { transition-delay: 0.16s; }
+.objective-card:nth-child(4) .photo-paper { transition-delay: 0.24s; }
 
 /* ═══════════════ TESTIMONIALS ═══════════════ */
 .testimonials {

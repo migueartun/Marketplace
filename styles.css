@@ -850,6 +850,17 @@ nav {
     position: absolute;
     inset: 0;
     background: #111111;
+    overflow: hidden;
+}
+.vf-preview video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity .4s;
+}
+.vf-preview video.active {
+    opacity: 1;
 }
 
 .vf-scrim {

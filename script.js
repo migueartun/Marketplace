@@ -329,80 +329,142 @@ const vfInfoLeft = document.getElementById('vfInfoLeft');
 const vfInfoRight = document.getElementById('vfInfoRight');
 const progressText = document.getElementById('progressText');
 const galleryGrid = document.getElementById('galleryGrid');
+const vfVideo = document.getElementById('vfVideo');
+const vfCanvas = document.getElementById('vfCanvas');
 
 if (cameraBtn && cameraOverlay) {
     let shooting = false;
+    let cameraStream = null;
+    let photoIndex = 0;
+
+    function stopCamera() {
+        if (cameraStream) {
+            cameraStream.getTracks().forEach(t => t.stop());
+            cameraStream = null;
+        }
+        vfVideo.classList.remove('active');
+    }
+
+    function capturePhoto() {
+        if (!cameraStream) return;
+        vfCanvas.width = vfVideo.videoWidth || 640;
+        vfCanvas.height = vfVideo.videoHeight || 480;
+        const ctx = vfCanvas.getContext('2d');
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(vfVideo, 0, 0, vfCanvas.width, vfCanvas.height);
+        const dataUrl = vfCanvas.toDataURL('image/jpeg', 0.85);
+
+        // Find next empty gallery slot
+        const items = galleryGrid.querySelectorAll('.gallery-item');
+        if (photoIndex < items.length) {
+            const img = items[photoIndex].querySelector('img');
+            if (img) {
+                img.src = dataUrl;
+                img.onerror = null;
+            }
+            photoIndex++;
+        }
+        if (photoIndex >= items.length) photoIndex = 0;
+    }
 
     cameraBtn.addEventListener('click', () => {
         if (shooting) return;
         shooting = true;
 
-        // Reset
-        shutterTop.classList.remove('active');
-        shutterBottom.classList.remove('active');
-        cameraFlash.classList.remove('active');
-        vfFocusBox.classList.remove('locked');
-        cameraAperture.classList.remove('active');
-        cameraOverlay.classList.remove('done');
-        cameraOverlay.classList.add('active');
+        // Request camera
+        const startCamera = new Promise((resolve) => {
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false })
+                    .then(stream => {
+                        cameraStream = stream;
+                        vfVideo.srcObject = stream;
+                        vfVideo.play();
+                        vfVideo.classList.add('active');
+                        resolve(true);
+                    })
+                    .catch(() => resolve(false));
+            } else {
+                resolve(false);
+            }
+        });
 
-        // Phase 1 — Viewfinder info dance
-        const phases = ['AF', 'MF', 'AF'];
-        let pi = 0;
-        const infoInterval = setInterval(() => {
-            vfInfoLeft.textContent = phases[pi++ % 3];
-        }, 200);
-
-        // Phase 2 — Focus box search
-        setTimeout(() => {
-            vfFocusBox.classList.add('active');
-            progressText.textContent = 'ENFOCANDO';
-        }, 400);
-
-        // Phase 3 — Focus locked
-        setTimeout(() => {
-            clearInterval(infoInterval);
-            vfInfoLeft.textContent = 'AF';
-            vfInfoRight.textContent = 'ISO 400';
-            vfFocusBox.classList.remove('active');
-            vfFocusBox.classList.add('locked');
-            progressText.textContent = 'BLOQUEADO';
-        }, 1200);
-
-        // Phase 4 — Aperture closes
-        setTimeout(() => {
-            cameraAperture.classList.add('active');
-            progressText.textContent = 'F/2.8';
-        }, 1800);
-
-        // Phase 5 — Shutter fires
-        setTimeout(() => {
-            cameraAperture.classList.remove('active');
-            shutterTop.classList.add('active');
-            shutterBottom.classList.add('active');
-            progressText.textContent = 'CAPTURANDO';
-        }, 2100);
-
-        // Phase 6 — Flash + reveal
-        setTimeout(() => {
-            cameraFlash.classList.add('active');
+        startCamera.then(hasCamera => {
+            // Reset
             shutterTop.classList.remove('active');
             shutterBottom.classList.remove('active');
-            progressText.textContent = '\u2713 LISTO';
-        }, 2350);
-
-        setTimeout(() => {
             cameraFlash.classList.remove('active');
-        }, 2600);
+            vfFocusBox.classList.remove('locked');
+            cameraAperture.classList.remove('active');
+            cameraOverlay.classList.remove('done');
+            cameraOverlay.classList.add('active');
 
-        setTimeout(() => {
-            cameraOverlay.classList.remove('active');
-            cameraOverlay.classList.add('done');
-            galleryGrid.classList.add('shot');
-            setTimeout(() => galleryGrid.classList.add('flash'), 100);
-            setTimeout(() => galleryGrid.classList.remove('flash'), 900);
-            shooting = false;
-        }, 2900);
+            // Phase 1 — Viewfinder info dance
+            const phases = ['AF', 'MF', 'AF'];
+            let pi = 0;
+            const infoInterval = setInterval(() => {
+                vfInfoLeft.textContent = phases[pi++ % 3];
+            }, 200);
+
+            // Phase 2 — Focus box search
+            setTimeout(() => {
+                vfFocusBox.classList.add('active');
+                progressText.textContent = 'ENFOCANDO';
+            }, 400);
+
+            // Phase 3 — Focus locked
+            setTimeout(() => {
+                clearInterval(infoInterval);
+                vfInfoLeft.textContent = 'AF';
+                vfInfoRight.textContent = 'ISO 400';
+                vfFocusBox.classList.remove('active');
+                vfFocusBox.classList.add('locked');
+                progressText.textContent = 'BLOQUEADO';
+            }, 1200);
+
+            // Phase 4 — Aperture closes
+            setTimeout(() => {
+                cameraAperture.classList.add('active');
+                progressText.textContent = 'F/2.8';
+            }, 1800);
+
+            // Phase 5 — Shutter fires + capture
+            setTimeout(() => {
+                cameraAperture.classList.remove('active');
+                shutterTop.classList.add('active');
+                shutterBottom.classList.add('active');
+                progressText.textContent = 'CAPTURANDO';
+                if (hasCamera) capturePhoto();
+            }, 2100);
+
+            // Phase 6 — Flash + reveal
+            setTimeout(() => {
+                cameraFlash.classList.add('active');
+                shutterTop.classList.remove('active');
+                shutterBottom.classList.remove('active');
+                progressText.textContent = '\u2713 LISTO';
+                stopCamera();
+            }, 2350);
+
+            setTimeout(() => {
+                cameraFlash.classList.remove('active');
+            }, 2600);
+
+            setTimeout(() => {
+                cameraOverlay.classList.remove('active');
+                cameraOverlay.classList.add('done');
+                if (!hasCamera) {
+                    galleryGrid.classList.add('shot');
+                    setTimeout(() => galleryGrid.classList.add('flash'), 100);
+                    setTimeout(() => galleryGrid.classList.remove('flash'), 900);
+                } else {
+                    galleryGrid.classList.add('shot');
+                    setTimeout(() => galleryGrid.classList.add('flash'), 100);
+                    setTimeout(() => galleryGrid.classList.remove('flash'), 900);
+                }
+                shooting = false;
+            }, 2900);
+        });
     });
 }
 

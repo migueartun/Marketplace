@@ -212,13 +212,13 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
             </div>
             <h3>Galer&iacute;a vac&iacute;a</h3>
-            <p>Presiona el bot&oacute;n para capturar las im&aacute;genes</p>
+            <p>Usa tu c&aacute;mara para capturar tus propias fotos</p>
         </div>
     </div>
     <div class="gallery-cta">
         <button class="camera-btn" id="cameraBtn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-            <span>Tomar foto</span>
+            <span>Capturar foto</span>
         </button>
     </div>
 </section>
@@ -236,7 +236,10 @@
         <div class="aperture-blade" style="--i:5"></div>
     </div>
     <div class="camera-viewfinder">
-        <div class="vf-preview" id="vfPreview"></div>
+        <div class="vf-preview" id="vfPreview">
+            <video id="vfVideo" autoplay playsinline muted></video>
+            <canvas id="vfCanvas" style="display:none"></canvas>
+        </div>
         <div class="vf-grid">
             <div class="vf-hline" style="top:33.33%"></div>
             <div class="vf-hline" style="top:66.66%"></div>

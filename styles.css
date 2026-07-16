@@ -588,6 +588,79 @@ nav {
 .step-link span { transition: transform .3s; }
 .step-link:hover span { transform: translateX(4px); }
 
+/* ── Focus animation on scroll reveal ── */
+.step-frame {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity .6s, transform .6s, background .4s;
+}
+.process-step.visible .step-frame {
+    opacity: 1;
+    transform: translateY(0);
+}
+.process-step.visible .step-reticle {
+    animation: focusSearch 1.2s ease-in-out forwards;
+}
+@keyframes focusSearch {
+    0% { border-color: rgba(198,40,40,0.06); width: 60px; height: 60px; transform: translate(-50%, -50%) rotate(0deg); }
+    30% { border-color: rgba(229,57,53,0.3); width: 72px; height: 72px; transform: translate(-50%, -50%) rotate(15deg); }
+    60% { border-color: rgba(229,57,53,0.2); width: 64px; height: 64px; transform: translate(-50%, -50%) rotate(-5deg); }
+    100% { border-color: rgba(198,40,40,0.1); width: 60px; height: 60px; transform: translate(-50%, -50%) rotate(0deg); }
+}
+.process-step.visible .step-reticle::before,
+.process-step.visible .step-reticle::after {
+    animation: crosshairScan 1.2s ease-in-out forwards;
+}
+@keyframes crosshairScan {
+    0% { background: rgba(198,40,40,0.04); }
+    40% { background: rgba(229,57,53,0.15); }
+    100% { background: rgba(198,40,40,0.06); }
+}
+.process-step.visible .step-corner {
+    animation: cornerExtend .8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.process-step.visible .step-corner.tl { animation-delay: 0s; }
+.process-step.visible .step-corner.tr { animation-delay: 0.1s; }
+.process-step.visible .step-corner.bl { animation-delay: 0.2s; }
+.process-step.visible .step-corner.br { animation-delay: 0.3s; }
+@keyframes cornerExtend {
+    0% { width: 20px; height: 20px; border-color: rgba(198,40,40,0.25); }
+    50% { width: 28px; height: 28px; border-color: rgba(229,57,53,0.5); }
+    100% { width: 24px; height: 24px; border-color: rgba(198,40,40,0.4); }
+}
+.process-step.visible .step-num {
+    animation: badgeReveal .6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes badgeReveal {
+    0% { opacity: 0; transform: translateY(-8px); border-color: rgba(198,40,40,0); }
+    100% { opacity: 1; transform: translateY(0); border-color: rgba(198,40,40,0.15); }
+}
+.process-step.visible .step-icon {
+    animation: iconPop .7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+@keyframes iconPop {
+    0% { opacity: 0; transform: scale(0); }
+    60% { transform: scale(1.15); }
+    100% { opacity: 1; transform: scale(1); }
+}
+.process-step.visible h3,
+.process-step.visible p,
+.process-step.visible .step-link {
+    animation: fadeUp .6s ease forwards;
+}
+.process-step.visible h3 { animation-delay: 0.15s; opacity: 0; }
+.process-step.visible p { animation-delay: 0.25s; opacity: 0; }
+.process-step.visible .step-link { animation-delay: 0.35s; opacity: 0; }
+@keyframes fadeUp {
+    0% { opacity: 0; transform: translateY(12px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Stagger children */
+.process-step:nth-child(1) .step-frame { transition-delay: 0s; }
+.process-step:nth-child(2) .step-frame { transition-delay: 0.15s; }
+.process-step:nth-child(3) .step-frame { transition-delay: 0.3s; }
+
 /* ═══════════════ GALERÍA ═══════════════ */
 .gallery-section {
     padding: 5rem 2rem;

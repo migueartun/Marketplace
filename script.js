@@ -303,7 +303,7 @@ document.querySelectorAll('[style*="background-image"]').forEach(el => {
     const url = (el.style.backgroundImage.match(/url\("?(.+?)"?\)/) || [])[1];
     if (!url) return;
     const img = new Image();
-    img.onerror = () => { el.style.backgroundImage = ''; el.style.background = 'linear-gradient(135deg, #1c1c2a, #14141f)'; };
+    img.onerror = () => { el.style.backgroundImage = ''; el.style.background = 'linear-gradient(135deg, #1a1a1a, #111111)'; };
     img.src = url;
 });
 

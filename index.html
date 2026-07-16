@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LuxArs &mdash; Marketplace de Fot&oacute;grafos</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128247;</text></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="bg-noise"></div>
+<div class="bg-glow"></div>
+
+<!-- ════════════════ HERO ════════════════ -->
+<section id="hero">
+    <div id="canvas-container"></div>
+    <div id="loader"><div class="spinner"></div></div>
+    <div class="overlay">
+        <nav>
+            <a href="#" class="logo">LUX<span>ARS</span></a>
+            <button class="mobile-btn" aria-label="Men&uacute;">&#9776;</button>
+            <ul class="nav-links">
+                <li><a href="#featured">Talento</a></li>
+                <li><a href="#como-funciona">C&oacute;mo funciona</a></li>
+                <li><a href="#galeria">Galer&iacute;a</a></li>
+                <li><a href="#" class="nav-cta" data-modal="unirse">Unirse</a></li>
+            </ul>
+        </nav>
+        <div class="hero-content">
+            <span class="badge">&#9650; Marketplace de Fot&oacute;grafos</span>
+            <h1><span class="typewriter gradient-text" data-text="Donde la fotograf&iacute;a cobra vida."></span></h1>
+            <p>Conectamos marcas y agencias con los fot&oacute;grafos m&aacute;s talentosos de la ciudad. Explora portfolios, compara estilos y contrata al profesional ideal para tu proyecto.</p>
+            <div class="hero-cta">
+                <a href="#" class="btn-primary btn-glow" data-modal="explorar">
+                    <span>Explorar fot&oacute;grafos</span>
+                    <svg viewBox="0 0 13 10" height="10" width="15"><path d="M1,5 L11,5"/><polyline points="8 1 12 5 8 9"/></svg>
+                </a>
+                <a href="#" class="btn-outline" data-modal="fotografo">Soy fot&oacute;grafo</a>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Desliza</span>
+            <div class="scroll-line"></div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════ STATS ════════════════ -->
+<section class="stats">
+    <div class="stats-inner">
+        <div class="stat-item">
+            <span class="stat-num" data-target="500">0</span>
+            <span class="stat-label">Fot&oacute;grafos</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+            <span class="stat-num" data-target="1200">0</span>
+            <span class="stat-label">Proyectos</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+            <span class="stat-num" data-target="98">0</span>
+            <span class="stat-label">Satisfacci&oacute;n</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+            <span class="stat-num" data-target="50">0</span>
+            <span class="stat-label">Ciudades</span>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════ FEATURED ════════════════ -->
+<section class="section" id="featured">
+    <div class="section-header">
+        <span class="section-tag">Talento</span>
+        <h2>Fot&oacute;grafos <span class="gradient-text">destacados</span></h2>
+        <p class="desc">Profesionales con los mejores portfolios del mes.</p>
+    </div>
+    <div class="featured-grid">
+        <div class="featured-card reveal">
+            <div class="featured-img">
+                <img src="https://picsum.photos/id/64/600/800" alt="" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#2a1a3a,#14141f)'">
+            </div>
+            <div class="featured-overlay">
+                <div class="featured-info">
+                    <h3>Sofia Mendoza</h3>
+                    <span>Retrato &bull; Moda</span>
+                    <div class="featured-stats"><span>&#9733; 4.9</span><span>32 proyectos</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="featured-card reveal">
+            <div class="featured-img">
+                <img src="https://picsum.photos/id/177/600/800" alt="" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#1a2a3a,#14141f)'">
+            </div>
+            <div class="featured-overlay">
+                <div class="featured-info">
+                    <h3>Mateo Herrera</h3>
+                    <span>Urbana &bull; Arquitectura</span>
+                    <div class="featured-stats"><span>&#9733; 4.8</span><span>27 proyectos</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="featured-card reveal">
+            <div class="featured-img">
+                <img src="https://picsum.photos/id/1011/600/800" alt="" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#1a2a1a,#14141f)'">
+            </div>
+            <div class="featured-overlay">
+                <div class="featured-info">
+                    <h3>Camila Vargas</h3>
+                    <span>Gastronom&iacute;a &bull; Producto</span>
+                    <div class="featured-stats"><span>&#9733; 4.9</span><span>45 proyectos</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════ CÓMO FUNCIONA ════════════════ -->
+<section class="section" id="como-funciona">
+    <div class="section-header">
+        <span class="section-tag">Proceso</span>
+        <h2>C&oacute;mo <span class="gradient-text">funciona</span></h2>
+        <p class="desc">Tres pasos para encontrar al fot&oacute;grafo perfecto.</p>
+    </div>
+    <div class="grid-3">
+        <div class="u-card reveal" style="--hue: 260;">
+            <div class="card-glow"></div>
+            <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+            <div class="num">01</div>
+            <h3>Explora</h3>
+            <p>Navega por perfiles curados de fot&oacute;grafos profesionales. Filtra por estilo, ubicaci&oacute;n y especialidad.</p>
+            <a href="#" class="card-link" data-modal="explorar">Ver talento &rarr;</a>
+        </div>
+        <div class="u-card reveal" style="--hue: 170;">
+            <div class="card-glow"></div>
+            <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+            <div class="num">02</div>
+            <h3>Compara</h3>
+            <p>Revisa trabajos anteriores, lee opiniones y compara presupuestos. Todo en un solo lugar.</p>
+            <a href="#" class="card-link" data-modal="explorar">Comparar &rarr;</a>
+        </div>
+        <div class="u-card reveal" style="--hue: 330;">
+            <div class="card-glow"></div>
+            <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <div class="num">03</div>
+            <h3>Contrata</h3>
+            <p>Conecta con el fot&oacute;grafo, acuerda los detalles y da vida a tu proyecto. Simple y seguro.</p>
+            <a href="#" class="card-link" data-modal="explorar">Contratar &rarr;</a>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════ GALERÍA ════════════════ -->
+<section class="gallery-section" id="galeria">
+    <div class="section-header">
+        <span class="section-tag">Galer&iacute;a</span>
+        <h2>Inspiraci&oacute;n <span class="gradient-text">visual</span></h2>
+        <p class="desc">Trabajos seleccionados de nuestra comunidad de fot&oacute;grafos.</p>
+    </div>
+    <div class="gallery-grid" id="galleryGrid">
+        <div class="gallery-item"><div class="gallery-img"><img src="https://picsum.photos/id/1015/600/600" alt="" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#1c1c2a,#14141f)'"></div></div>
+        <div class="gallery-item"><div class="gallery-img"><img src="https://picsum.photos/id/1020/600/600" alt="" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#1c1c2a,#14141f)'"></div></div>
+        <div class="gallery-item"><div class="gallery-img"><img src="https://picsum.photos/id/1024/600/600" alt="" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#1c1c2a,#14141f)'"></div></div>
+        <div class="gallery-item"><div class="gallery-img"><img src="https://picsum.photos/id/1035/600/600" alt="" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#1c1c2a,#14141f)'"></div></div>
+        <div class="gallery-item"><div class="gallery-img"><img src="https://picsum.photos/id/1040/600/600" alt="" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#1c1c2a,#14141f)'"></div></div>
+        <div class="gallery-item"><div class="gallery-img"><img src="https://picsum.photos/id/1044/600/600" alt="" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#1c1c2a,#14141f)'"></div></div>
+        <div class="gallery-item"><div class="gallery-img"><img src="https://picsum.photos/id/1050/600/600" alt="" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#1c1c2a,#14141f)'"></div></div>
+        <div class="gallery-item"><div class="gallery-img"><img src="https://picsum.photos/id/1060/600/600" alt="" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#1c1c2a,#14141f)'"></div></div>
+        <div class="gallery-placeholder" id="galleryPlaceholder">
+            <div class="placeholder-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            </div>
+            <h3>Galer&iacute;a vac&iacute;a</h3>
+            <p>Presiona el bot&oacute;n para capturar las im&aacute;genes</p>
+        </div>
+    </div>
+    <div class="gallery-cta">
+        <button class="camera-btn" id="cameraBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span>Tomar foto</span>
+        </button>
+    </div>
+</section>
+
+<!-- Camera overlay -->
+<div class="camera-overlay" id="cameraOverlay">
+    <div class="camera-shutter-top" id="shutterTop"></div>
+    <div class="camera-shutter-bottom" id="shutterBottom"></div>
+    <div class="camera-aperture" id="cameraAperture">
+        <div class="aperture-blade" style="--i:0"></div>
+        <div class="aperture-blade" style="--i:1"></div>
+        <div class="aperture-blade" style="--i:2"></div>
+        <div class="aperture-blade" style="--i:3"></div>
+        <div class="aperture-blade" style="--i:4"></div>
+        <div class="aperture-blade" style="--i:5"></div>
+    </div>
+    <div class="camera-viewfinder">
+        <div class="vf-preview" id="vfPreview"></div>
+        <div class="vf-grid">
+            <div class="vf-hline" style="top:33.33%"></div>
+            <div class="vf-hline" style="top:66.66%"></div>
+            <div class="vf-vline" style="left:33.33%"></div>
+            <div class="vf-vline" style="left:66.66%"></div>
+        </div>
+        <div class="vf-scrim"></div>
+        <div class="vf-info">
+            <span class="vf-info-left" id="vfInfoLeft">AF</span>
+            <span class="vf-info-right" id="vfInfoRight">ISO 400</span>
+        </div>
+        <div class="vf-focus-box" id="vfFocusBox"></div>
+        <span class="vf-corner tl"></span><span class="vf-corner tr"></span>
+        <span class="vf-corner bl"></span><span class="vf-corner br"></span>
+    </div>
+    <div class="camera-flash" id="cameraFlash">
+        <div class="flash-core"></div>
+    </div>
+    <div class="camera-progress" id="cameraProgress">
+        <div class="progress-ring"></div>
+        <div class="progress-text" id="progressText">ENFOCANDO</div>
+    </div>
+</div>
+
+<!-- ════════════════ CAROUSEL ════════════════ -->
+<section class="carousel-section">
+    <div class="section-header">
+        <span class="section-tag">Categor&iacute;as</span>
+        <h2>Especialidades</h2>
+        <p class="desc">Explora las diferentes &aacute;reas de nuestros fot&oacute;grafos.</p>
+    </div>
+    <div class="wrapper">
+        <div class="inner" style="--quantity: 10;">
+            <div class="card" style="--index: 0;"><div class="img" style="background-image:url(https://picsum.photos/seed/retrato/300/400)"></div><div class="card-label">Retrato</div></div>
+            <div class="card" style="--index: 1;"><div class="img" style="background-image:url(https://picsum.photos/seed/paisaje/300/400)"></div><div class="card-label">Paisaje</div></div>
+            <div class="card" style="--index: 2;"><div class="img" style="background-image:url(https://picsum.photos/seed/boda/300/400)"></div><div class="card-label">Boda</div></div>
+            <div class="card" style="--index: 3;"><div class="img" style="background-image:url(https://picsum.photos/seed/moda/300/400)"></div><div class="card-label">Moda</div></div>
+            <div class="card" style="--index: 4;"><div class="img" style="background-image:url(https://picsum.photos/seed/gastronomia/300/400)"></div><div class="card-label">Gastronom&iacute;a</div></div>
+            <div class="card" style="--index: 5;"><div class="img" style="background-image:url(https://picsum.photos/seed/arquitectura/300/400)"></div><div class="card-label">Arquitectura</div></div>
+            <div class="card" style="--index: 6;"><div class="img" style="background-image:url(https://picsum.photos/seed/urbana/300/400)"></div><div class="card-label">Urbana</div></div>
+            <div class="card" style="--index: 7;"><div class="img" style="background-image:url(https://picsum.photos/seed/naturaleza/300/400)"></div><div class="card-label">Naturaleza</div></div>
+            <div class="card" style="--index: 8;"><div class="img" style="background-image:url(https://picsum.photos/seed/producto/300/400)"></div><div class="card-label">Producto</div></div>
+            <div class="card" style="--index: 9;"><div class="img" style="background-image:url(https://picsum.photos/seed/eventos/300/400)"></div><div class="card-label">Eventos</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════ TESTIMONIALS ════════════════ -->
+<section class="testimonials">
+    <div class="section-header">
+        <span class="section-tag">Testimonios</span>
+        <h2>Voces de la <span class="gradient-text">comunidad</span></h2>
+        <p class="desc">Lo que dicen quienes ya conf&iacute;an en LuxArs.</p>
+    </div>
+    <div class="testimonial-grid">
+        <div class="testimonial-card reveal">
+            <div class="testimonial-glow"></div>
+            <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p>"Encontr&eacute; al fot&oacute;grafo perfecto para nuestra campa&ntilde;a en menos de una semana. La calidad de los portfolios es excepcional."</p>
+            <div class="author">
+                <div class="avatar" style="background:linear-gradient(135deg,#7c5cfc,#5a3dcf)">M</div>
+                <div><strong>Mar&iacute;a G.</strong><span>Directora de Marketing</span></div>
+            </div>
+        </div>
+        <div class="testimonial-card reveal">
+            <div class="testimonial-glow"></div>
+            <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p>"Como fot&oacute;grafo independiente, LuxArs me ha permitido conectar con clientes incre&iacute;bles y hacer crecer mi carrera profesional."</p>
+            <div class="author">
+                <div class="avatar" style="background:linear-gradient(135deg,#00d4aa,#00a885)">C</div>
+                <div><strong>Carlos R.</strong><span>Fot&oacute;grafo Profesional</span></div>
+            </div>
+        </div>
+        <div class="testimonial-card reveal">
+            <div class="testimonial-glow"></div>
+            <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+            <p>"La plataforma es intuitiva, el proceso de contrataci&oacute;n es muy fluido. Sin duda la mejor opci&oacute;n del mercado actual."</p>
+            <div class="author">
+                <div class="avatar" style="background:linear-gradient(135deg,#ff6b9d,#e0557f)">A</div>
+                <div><strong>Ana L.</strong><span>CEO, Agencia Visual</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════ CTA ════════════════ -->
+<section class="cta-section">
+    <div class="cta-glow-bg"></div>
+    <h2>&iquest;Listo para <span class="gradient-text">empezar</span>?</h2>
+    <p>&Uacute;nete a LuxArs y descubre el talento fotogr&aacute;fico que llevar&aacute; tu proyecto al siguiente nivel.</p>
+    <div class="cta-buttons">
+        <a href="#" class="btn-primary btn-glow" data-modal="explorar">
+            <span>Explorar fot&oacute;grafos</span>
+            <svg viewBox="0 0 13 10" height="10" width="15"><path d="M1,5 L11,5"/><polyline points="8 1 12 5 8 9"/></svg>
+        </a>
+        <a href="#" class="btn-outline" data-modal="unirse">Crear cuenta gratis</a>
+    </div>
+</section>
+
+<!-- ════════════════ FOOTER ════════════════ -->
+<footer>
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <a href="#" class="logo">LUX<span>ARS</span></a>
+            <p>El marketplace de fot&oacute;grafos para marcas y agencias. Conectamos talento visual con proyectos excepcionales.</p>
+            <div class="footer-social">
+                <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor"/></svg></a>
+                <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg></a>
+                <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+            </div>
+        </div>
+        <div class="footer-links">
+            <div class="footer-col">
+                <h4>Plataforma</h4>
+                <a href="#" data-modal="explorar">Explorar</a>
+                <a href="#" data-modal="fotografo">Para fot&oacute;grafos</a>
+                <a href="#">Precios</a>
+                <a href="#" data-modal="unirse">Crear cuenta</a>
+            </div>
+            <div class="footer-col">
+                <h4>Recursos</h4>
+                <a href="#">Blog</a>
+                <a href="#">Gu&iacute;as</a>
+                <a href="#">FAQ</a>
+                <a href="#">Soporte</a>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <a href="#">T&eacute;rminos</a>
+                <a href="#">Privacidad</a>
+                <a href="#">Cookies</a>
+                <a href="#">Contacto</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">&copy; 2026 LuxArs. Todos los derechos reservados.</div>
+</footer>
+
+<!-- ════════════════ MODALS ════════════════ -->
+<div class="modal-overlay" id="modal-explorar">
+    <div class="modal">
+        <button class="modal-close">&times;</button>
+        <div class="modal-header">
+            <span class="section-tag">Explorar</span>
+            <h2>Fot&oacute;grafos destacados</h2>
+            <p>Conoce a algunos de nuestros profesionales con mejor valoraci&oacute;n.</p>
+        </div>
+        <div class="photographer-grid">
+            <div class="photo-card"><div class="photo-img"><img src="https://picsum.photos/seed/foto1/400/500" alt="" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#2a1a3a,#14141f)'"></div><div class="photo-info"><h4>Sofia Mendoza</h4><span>Retrato &bull; Moda</span><div class="photo-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div></div></div>
+            <div class="photo-card"><div class="photo-img"><img src="https://picsum.photos/seed/foto2/400/500" alt="" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#1a2a3a,#14141f)'"></div><div class="photo-info"><h4>Diego Castillo</h4><span>Paisaje &bull; Naturaleza</span><div class="photo-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</div></div></div>
+            <div class="photo-card"><div class="photo-img"><img src="https://picsum.photos/seed/foto3/400/500" alt="" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#1a1a2a,#14141f)'"></div><div class="photo-info"><h4>Valentina Rios</h4><span>Boda &bull; Eventos</span><div class="photo-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div></div></div>
+            <div class="photo-card"><div class="photo-img"><img src="https://picsum.photos/seed/foto4/400/500" alt="" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#1a2a2a,#14141f)'"></div><div class="photo-info"><h4>Mateo Herrera</h4><span>Arquitectura &bull; Urbana</span><div class="photo-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</div></div></div>
+            <div class="photo-card"><div class="photo-img"><img src="https://picsum.photos/seed/foto5/400/500" alt="" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#2a1a1a,#14141f)'"></div><div class="photo-info"><h4>Camila Vargas</h4><span>Gastronom&iacute;a &bull; Producto</span><div class="photo-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div></div></div>
+            <div class="photo-card"><div class="photo-img"><img src="https://picsum.photos/seed/foto6/400/500" alt="" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#2a2a1a,#14141f)'"></div><div class="photo-info"><h4>Andres Paz</h4><span>Moda &bull; Retrato</span><div class="photo-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</div></div></div>
+        </div>
+        <a href="#" class="btn-primary btn-glow" style="margin:2rem auto 0;width:fit-content"><span>Ver todos</span></a>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-fotografo">
+    <div class="modal">
+        <button class="modal-close">&times;</button>
+        <div class="modal-header">
+            <span class="section-tag">Fot&oacute;grafos</span>
+            <h2>&iquest;Eres fot&oacute;grafo?</h2>
+            <p>&Uacute;nete a la comunidad de profesionales y conecta con clientes de primer nivel.</p>
+        </div>
+        <div class="benefits-grid">
+            <div class="benefit"><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div><h4>Personaliza tu perfil</h4><p>Crea un portfolio &uacute;nico que muestre tu mejor trabajo.</p></div>
+            <div class="benefit"><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg></div><h4>Conecta con marcas</h4><p>Accede a proyectos de agencias que buscan tu estilo.</p></div>
+            <div class="benefit"><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/></svg></div><h4>Notificaciones</h4><p>Te avisamos cuando un proyecto coincide con tu perfil.</p></div>
+            <div class="benefit"><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v4"/><path d="M12 18v4"/></svg></div><h4>Crece profesionalmente</h4><p>Recursos exclusivos y comunidad de fot&oacute;grafos.</p></div>
+        </div>
+        <div class="modal-form">
+            <h4>Reg&iacute;strate como fot&oacute;grafo</h4>
+            <div class="form-row"><input type="text" placeholder="Nombre completo" /><input type="email" placeholder="Correo electr&oacute;nico" /></div>
+            <div class="form-row"><input type="text" placeholder="Especialidad" /><input type="url" placeholder="URL de portfolio" /></div>
+            <div class="form-row"><textarea rows="3" placeholder="Cu&eacute;ntanos sobre ti..."></textarea></div>
+            <button class="btn-primary btn-glow" style="width:100%;justify-content:center"><span>Enviar solicitud</span></button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-unirse">
+    <div class="modal modal-sm">
+        <button class="modal-close">&times;</button>
+        <div class="modal-header">
+            <span class="section-tag">Bienvenido</span>
+            <h2>Crear cuenta</h2>
+            <p>&Uacute;nete a LuxArs y empieza a explorar el mejor talento fotogr&aacute;fico.</p>
+        </div>
+        <div class="auth-options">
+            <button class="auth-btn"><svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>Google</button>
+            <button class="auth-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>GitHub</button>
+            <div class="auth-divider"><span>o con correo</span></div>
+            <div class="form-row"><input type="text" placeholder="Nombre" /></div>
+            <div class="form-row"><input type="email" placeholder="Correo" /></div>
+            <div class="form-row"><input type="password" placeholder="Contrase&ntilde;a" /></div>
+            <label class="auth-check"><input type="checkbox" /> Acepto <a href="#">t&eacute;rminos</a></label>
+            <button class="btn-primary btn-glow" style="width:100%;justify-content:center;margin-top:1rem"><span>Crear cuenta</span></button>
+            <p class="auth-foot">¿Ya tienes cuenta? <a href="#">Inicia sesi&oacute;n</a></p>
+        </div>
+    </div>
+</div>
+
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.163.0/examples/jsm/"
+    }
+}
+</script>
+<script type="module" src="script.js"></script>
+</body>
+</html>

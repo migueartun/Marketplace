@@ -1034,6 +1034,118 @@ nav {
     text-align: left;
 }
 
+/* ═══════════════ OBJETIVOS ═══════════════ */
+.objectives-section {
+    padding: 5rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+.objectives-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.2rem;
+}
+.objective-card {
+    perspective: 800px;
+}
+.photo-paper {
+    position: relative;
+    background: #151515;
+    padding: 0.6rem 0.6rem 1rem;
+    border-radius: 2px;
+    overflow: hidden;
+    transition: transform .4s, box-shadow .4s;
+}
+.objective-card:hover .photo-paper {
+    transform: translateY(-6px) rotateZ(-0.5deg);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(198,40,40,0.08);
+}
+/* Emulsion / image area */
+.paper-emulsion {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.emulsion-bg {
+    position: absolute;
+    inset: 0;
+    opacity: 0.4;
+}
+.paper-emulsion svg {
+    width: 32px;
+    height: 32px;
+    color: rgba(240,240,245,0.15);
+    position: relative;
+    z-index: 1;
+}
+/* Paper info area */
+.paper-info {
+    padding: 0 0.4rem;
+}
+.paper-info h3 {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+    letter-spacing: -0.01em;
+}
+.paper-info p {
+    color: #555555;
+    font-size: 0.75rem;
+    line-height: 1.5;
+}
+
+/* ── Photo developing reveal animation ── */
+.photo-paper {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+    transition: opacity .5s, transform .5s, box-shadow .4s, transform .4s;
+}
+.objective-card.visible .photo-paper {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+.objective-card.visible .paper-emulsion::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    animation: developWash 1s ease forwards;
+    pointer-events: none;
+}
+@keyframes developWash {
+    0% { background: linear-gradient(135deg, rgba(240,240,245,0.5), rgba(240,240,245,0.3)); opacity: 1; }
+    30% { background: linear-gradient(135deg, rgba(240,240,245,0.15), rgba(198,40,40,0.1)); opacity: 0.6; }
+    60% { background: linear-gradient(135deg, transparent, rgba(198,40,40,0.05)); opacity: 0.3; }
+    100% { background: transparent; opacity: 0; }
+}
+.objective-card.visible .paper-emulsion svg {
+    animation: emulsionAppear .8s ease forwards;
+}
+@keyframes emulsionAppear {
+    0% { opacity: 0; transform: scale(0.5) rotate(-5deg); filter: saturate(0) brightness(1.5); }
+    50% { opacity: 0.5; transform: scale(1.1) rotate(2deg); filter: saturate(0.3) brightness(1.2); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); filter: saturate(1) brightness(1); }
+}
+.objective-card.visible .paper-info h3,
+.objective-card.visible .paper-info p {
+    animation: paperTextReveal .6s ease forwards;
+}
+.objective-card.visible .paper-info h3 { animation-delay: 0.3s; opacity: 0; }
+.objective-card.visible .paper-info p { animation-delay: 0.45s; opacity: 0; }
+@keyframes paperTextReveal {
+    0% { opacity: 0; filter: blur(4px); }
+    100% { opacity: 1; filter: blur(0); }
+}
+
+/* Stagger */
+.objective-card:nth-child(1) .photo-paper { transition-delay: 0s; }
+.objective-card:nth-child(2) .photo-paper { transition-delay: 0.1s; }
+.objective-card:nth-child(3) .photo-paper { transition-delay: 0.2s; }
+.objective-card:nth-child(4) .photo-paper { transition-delay: 0.3s; }
+
 /* ═══════════════ TESTIMONIALS ═══════════════ */
 .testimonials {
     max-width: 1100px;
@@ -1367,6 +1479,7 @@ footer {
 /* ═══════════════ RESPONSIVE ═══════════════ */
 @media (max-width: 900px) {
     .featured-grid { grid-template-columns: 1fr 1fr; }
+    .objectives-grid { grid-template-columns: repeat(2, 1fr); }
     .process-steps,
     .testimonial-grid { grid-template-columns: repeat(2, 1fr); }
     .process-steps::before { display: none; }
@@ -1401,6 +1514,7 @@ footer {
     .scroll-indicator { display: none; }
 }
 @media (max-width: 600px) {
+    .objectives-grid,
     .featured-grid,
     .process-steps,
     .testimonial-grid,
@@ -1424,6 +1538,7 @@ footer {
     .hero-content p { font-size: 0.9rem; }
     .section { padding: 3rem 1.2rem; }
     .gallery-section { padding: 3rem 1.2rem; }
+    .objectives-section { padding: 3rem 1.2rem; }
     .carousel-section { padding: 3rem 1.2rem; }
     .cta-section { padding: 3rem 1.2rem 4rem; }
     .testimonials { padding: 3rem 1.2rem; }

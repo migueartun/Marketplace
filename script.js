@@ -329,6 +329,7 @@ const vfInfoLeft = document.getElementById('vfInfoLeft');
 const vfInfoRight = document.getElementById('vfInfoRight');
 const progressText = document.getElementById('progressText');
 const galleryGrid = document.getElementById('galleryGrid');
+const galleryPlaceholder = document.getElementById('galleryPlaceholder');
 const vfVideo = document.getElementById('vfVideo');
 const vfCanvas = document.getElementById('vfCanvas');
 
@@ -355,17 +356,11 @@ if (cameraBtn && cameraOverlay) {
         ctx.drawImage(vfVideo, 0, 0, vfCanvas.width, vfCanvas.height);
         const dataUrl = vfCanvas.toDataURL('image/jpeg', 0.85);
 
-        // Find next empty gallery slot
-        const items = galleryGrid.querySelectorAll('.gallery-item');
-        if (photoIndex < items.length) {
-            const img = items[photoIndex].querySelector('img');
-            if (img) {
-                img.src = dataUrl;
-                img.onerror = null;
-            }
-            photoIndex++;
-        }
-        if (photoIndex >= items.length) photoIndex = 0;
+        // Create gallery item dynamically
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+        item.innerHTML = '<div class="gallery-img"><img src="' + dataUrl + '" alt=""></div>';
+        galleryGrid.insertBefore(item, galleryPlaceholder);
     }
 
     cameraBtn.addEventListener('click', () => {
@@ -453,15 +448,9 @@ if (cameraBtn && cameraOverlay) {
             setTimeout(() => {
                 cameraOverlay.classList.remove('active');
                 cameraOverlay.classList.add('done');
-                if (!hasCamera) {
-                    galleryGrid.classList.add('shot');
-                    setTimeout(() => galleryGrid.classList.add('flash'), 100);
-                    setTimeout(() => galleryGrid.classList.remove('flash'), 900);
-                } else {
-                    galleryGrid.classList.add('shot');
-                    setTimeout(() => galleryGrid.classList.add('flash'), 100);
-                    setTimeout(() => galleryGrid.classList.remove('flash'), 900);
-                }
+                galleryGrid.classList.add('shot');
+                setTimeout(() => galleryGrid.classList.add('flash'), 100);
+                setTimeout(() => galleryGrid.classList.remove('flash'), 900);
                 shooting = false;
             }, 2900);
         });

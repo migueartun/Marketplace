@@ -17,8 +17,6 @@ renderer.setSize(w, h);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.4;
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 container.appendChild(renderer.domElement);
 
@@ -28,8 +26,6 @@ scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture
 // ── Crimson key light ──
 const key = new THREE.DirectionalLight(0xff4433, 5);
 key.position.set(6, 8, 3);
-key.castShadow = true;
-key.shadow.mapSize.set(1024, 1024);
 scene.add(key);
 
 // ── Warm amber edge light ──
@@ -42,33 +38,10 @@ const fill = new THREE.DirectionalLight(0x4466aa, 0.6);
 fill.position.set(-3, 2, 5);
 scene.add(fill);
 
-// ── Copper floor glow ──
-const floorGlow = new THREE.PointLight(0xff6633, 0.4, 6);
-floorGlow.position.set(0, -0.3, 0);
-scene.add(floorGlow);
-
 // ── Ruby accent from below ──
-const rubyAccent = new THREE.PointLight(0xcc2244, 0.5, 4);
-rubyAccent.position.set(1.5, -0.2, 1);
+const rubyAccent = new THREE.PointLight(0xcc2244, 0.6, 5);
+rubyAccent.position.set(1.2, -0.6, 1.5);
 scene.add(rubyAccent);
-
-const floor = new THREE.Mesh(
-    new THREE.PlaneGeometry(10, 10),
-    new THREE.ShadowMaterial({ opacity: 0.12, color: 0x000000 })
-);
-floor.rotation.x = -Math.PI / 2;
-floor.position.y = -0.55;
-floor.receiveShadow = true;
-scene.add(floor);
-
-// ── Warm copper floor spill ──
-const spill = new THREE.Mesh(
-    new THREE.PlaneGeometry(3, 3),
-    new THREE.MeshBasicMaterial({ color: 0xff6633, transparent: true, opacity: 0.04, depthWrite: false })
-);
-spill.rotation.x = -Math.PI / 2;
-spill.position.y = -0.54;
-scene.add(spill);
 
 function buildMirrorlessCamera() {
     const g = new THREE.Group();
@@ -89,7 +62,6 @@ function buildMirrorlessCamera() {
     // ── Main body (slimmer, flat top) ──
     const body = new THREE.Mesh(new THREE.BoxGeometry(1.35, 0.62, 0.42), bodyMat);
     body.position.y = bodyY + 0.01;
-    body.castShadow = true; body.receiveShadow = true;
     g.add(body);
 
     // ── Top plate (flat mirrorless profile) ──

@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const container = document.getElementById('canvas-container');
@@ -26,116 +25,177 @@ container.appendChild(renderer.domElement);
 const pmrem = new THREE.PMREMGenerator(renderer);
 scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
 
-scene.add(new THREE.HemisphereLight(0x7c5cfc, 0x14141f, 0.6));
-const key = new THREE.DirectionalLight(0xffeedd, 4);
-key.position.set(5, 7, 4);
+// ── Crimson key light ──
+const key = new THREE.DirectionalLight(0xff4433, 5);
+key.position.set(6, 8, 3);
 key.castShadow = true;
 key.shadow.mapSize.set(1024, 1024);
 scene.add(key);
-const fill = new THREE.DirectionalLight(0x7c5cfc, 0.8);
-fill.position.set(-4, 1, 3);
+
+// ── Warm amber edge light ──
+const amber = new THREE.DirectionalLight(0xff8833, 2.5);
+amber.position.set(-5, 1, -4);
+scene.add(amber);
+
+// ── Cool fill ──
+const fill = new THREE.DirectionalLight(0x4466aa, 0.6);
+fill.position.set(-3, 2, 5);
 scene.add(fill);
-const rim = new THREE.DirectionalLight(0x00d4aa, 0.3);
-rim.position.set(0, -2, -5);
-scene.add(rim);
+
+// ── Copper floor glow ──
+const floorGlow = new THREE.PointLight(0xff6633, 0.4, 6);
+floorGlow.position.set(0, -0.3, 0);
+scene.add(floorGlow);
+
+// ── Ruby accent from below ──
+const rubyAccent = new THREE.PointLight(0xcc2244, 0.5, 4);
+rubyAccent.position.set(1.5, -0.2, 1);
+scene.add(rubyAccent);
 
 const floor = new THREE.Mesh(
-    new THREE.PlaneGeometry(8, 8),
-    new THREE.ShadowMaterial({ opacity: 0.08, color: 0x000000 })
+    new THREE.PlaneGeometry(10, 10),
+    new THREE.ShadowMaterial({ opacity: 0.12, color: 0x000000 })
 );
 floor.rotation.x = -Math.PI / 2;
 floor.position.y = -0.55;
 floor.receiveShadow = true;
 scene.add(floor);
 
-function buildCamera() {
+// ── Warm copper floor spill ──
+const spill = new THREE.Mesh(
+    new THREE.PlaneGeometry(3, 3),
+    new THREE.MeshBasicMaterial({ color: 0xff6633, transparent: true, opacity: 0.04, depthWrite: false })
+);
+spill.rotation.x = -Math.PI / 2;
+spill.position.y = -0.54;
+scene.add(spill);
+
+function buildBellowsCamera() {
     const g = new THREE.Group();
-    const mat = (c, m, r) => new THREE.MeshPhysicalMaterial({ color: c, metalness: m, roughness: r, envMapIntensity: 1.3 });
+
+    // Materials
+    const woodMat = new THREE.MeshPhysicalMaterial({ color: 0x3a2010, metalness: 0.05, roughness: 0.75, clearcoat: 0.1 });
+    const metalMat = new THREE.MeshPhysicalMaterial({ color: 0x4a4a5a, metalness: 0.85, roughness: 0.2, envMapIntensity: 1.5 });
+    const darkMetalMat = new THREE.MeshPhysicalMaterial({ color: 0x2a2a3a, metalness: 0.9, roughness: 0.15, envMapIntensity: 1.8 });
+    const brassMat = new THREE.MeshPhysicalMaterial({ color: 0x8a7a4a, metalness: 0.7, roughness: 0.3, envMapIntensity: 1.2 });
+    const lensMat = new THREE.MeshPhysicalMaterial({ color: 0x1a1a2a, metalness: 0.95, roughness: 0.08, envMapIntensity: 2 });
+    const glassMat = new THREE.MeshPhysicalMaterial({ color: 0x334466, metalness: 0, roughness: 0, transparent: true, opacity: 0.12, envMapIntensity: 2, side: THREE.DoubleSide });
+    const bellowsMat = new THREE.MeshPhysicalMaterial({ color: 0x0d0d0d, metalness: 0, roughness: 0.9, side: THREE.DoubleSide });
+    const bellowsMat2 = new THREE.MeshPhysicalMaterial({ color: 0x121212, metalness: 0, roughness: 0.85, side: THREE.DoubleSide });
+
     function add(m, x, y, z) { m.position.set(x, y, z); g.add(m); return m; }
-    function addR(m, x, y, z, rx, ry, rz) { m.position.set(x, y, z); m.rotation.set(rx, ry, rz); g.add(m); return m; }
 
-    const body = add(new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.7, 0.7), mat(0x36364d, 0.4, 0.4)), 0, 0, 0);
-    body.castShadow = true;
-    add(new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.12, 0.35), mat(0x26263a, 0.35, 0.45)), 0, -0.08, -0.37);
-    add(new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.5, 0.45), mat(0x1c1c2a, 0.05, 0.9)), 0.52, 0, -0.02);
+    // ── Baseboard ──
+    const base = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.08, 0.9), woodMat);
+    base.position.y = -0.35;
+    base.castShadow = true;
+    base.receiveShadow = true;
+    g.add(base);
+    const baseEdge = new THREE.Mesh(new THREE.BoxGeometry(2.45, 0.012, 0.94), new THREE.MeshPhysicalMaterial({ color: 0x2a1810, metalness: 0.1, roughness: 0.8 }));
+    baseEdge.position.y = -0.31;
+    g.add(baseEdge);
 
-    for (let i = 0; i < 5; i++)
-        add(new THREE.Mesh(new THREE.BoxGeometry(0.005, 0.35, 0.38), mat(0x14141f, 0.1, 0.8)), 0.68, 0.04, -0.03 + (i - 2) * 0.08);
-
-    add(new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.04, 0.6), mat(0x5a5a7a, 0.5, 0.3)), 0, 0.33, 0);
-    add(new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.26, 0.36), mat(0x36364d, 0.35, 0.45)), -0.2, 0.46, 0.02);
-    add(new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.1, 0.04), mat(0x36364d, 0.35, 0.45)), -0.2, 0.39, -0.19);
-    add(new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.1, 0.04), mat(0x36364d, 0.35, 0.45)), -0.2, 0.39, 0.23);
-    add(new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.035, 0.09), mat(0x7a7a9a, 0.6, 0.25)), -0.2, 0.62, 0.02);
-    add(new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.02, 0.05), mat(0xa0a0b8, 0.7, 0.2)), -0.2, 0.65, 0.02);
-    add(new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.1, 0.07), mat(0x26263a, 0.35, 0.45)), -0.2, 0.47, 0.23);
-
-    add(new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.11, 0.04, 24), mat(0x5a5a7a, 0.5, 0.3)), -0.43, 0.38, 0.17);
-    add(new THREE.Mesh(new THREE.TorusGeometry(0.095, 0.012, 6, 22), mat(0x7a7a9a, 0.6, 0.25)), -0.43, 0.375, 0.17);
-    add(new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 0.02, 18), mat(0x5a5a7a, 0.5, 0.3)), 0.42, 0.37, 0.19);
-    add(new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.065, 0.03, 18), mat(0x7a7a9a, 0.6, 0.2)), 0.42, 0.395, 0.19);
-    add(new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.07, 0.035, 18), mat(0x5a5a7a, 0.5, 0.3)), 0.32, 0.37, 0.21);
-    add(new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.015, 0.12), mat(0x14141f, 0, 0.1)), 0.15, 0.345, 0.19);
-    add(new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.018, 0.1), mat(0x26263a, 0.35, 0.35)), 0.24, 0.35, 0.02);
-
-    addR(new THREE.Mesh(new THREE.CylinderGeometry(0.46, 0.46, 0.035, 36), mat(0x26263a, 0.6, 0.25)), -0.18, 0, -0.37, Math.PI / 2, 0, 0);
-    addR(new THREE.Mesh(new THREE.RingGeometry(0.26, 0.4, 36), mat(0x1c1c2a, 0.7, 0.2)), -0.18, 0, -0.35, -Math.PI / 2, 0, 0);
-
-    const lens = new THREE.Group();
-    lens.position.set(-0.18, 0, -0.35);
-    function la(m, pz) { m.position.z = pz; lens.add(m); return m; }
-    function lar(m, pz) { m.rotation.x = Math.PI / 2; m.position.z = pz; lens.add(m); return m; }
-    lar(new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.4, 0.14, 32), mat(0x26263a, 0.35, 0.45)), -0.07);
-    lar(new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.36, 0.22, 32), mat(0x1c1c2a, 0.3, 0.5)), -0.25);
-    lar(new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.32, 0.16, 32), mat(0x26263a, 0.25, 0.55)), -0.44);
-    la(new THREE.Mesh(new THREE.TorusGeometry(0.37, 0.03, 8, 36), mat(0x5a5a7a, 0.4, 0.4)), -0.12);
-
-    for (let i = 0; i < 20; i++) {
-        const a = (i / 20) * Math.PI * 2;
-        const rib = new THREE.Mesh(new THREE.BoxGeometry(0.005, 0.03, 0.035), mat(0x5a5a7a, 0.4, 0.4));
-        rib.position.set(Math.cos(a) * 0.385, Math.sin(a) * 0.385, -0.12);
-        rib.lookAt(0, 0, -0.12); lens.add(rib);
+    // ── Rails ──
+    for (let rx of [-0.55, 0.55]) {
+        const rail = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.025, 0.04), darkMetalMat);
+        rail.position.set(rx, -0.29, 0);
+        g.add(rail);
     }
-    la(new THREE.Mesh(new THREE.TorusGeometry(0.33, 0.02, 8, 34), mat(0x36364d, 0.35, 0.45)), -0.34);
-    for (let i = 0; i < 18; i++) {
-        const a = (i / 18) * Math.PI * 2;
-        const bp = new THREE.Mesh(new THREE.SphereGeometry(0.012, 6, 6), mat(0x36364d, 0.35, 0.45));
-        bp.position.set(Math.cos(a) * 0.345, Math.sin(a) * 0.345, -0.34); lens.add(bp);
+
+    // ── Tripod head ──
+    const tripod = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.13, 0.1, 12), darkMetalMat);
+    tripod.position.y = -0.41; g.add(tripod);
+    const plate = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.15, 0.03, 12), metalMat);
+    plate.position.y = -0.35; g.add(plate);
+
+    // ── Rear standard ──
+    add(new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.9, 0.05), metalMat), 0, 0, -0.85);
+    add(new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.8, 0.03), darkMetalMat), 0, 0, -0.87);
+    add(new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.75, 0.015), glassMat), 0, 0, -0.88);
+
+    // Dark cloth
+    const cloth = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.35, 0.02), new THREE.MeshPhysicalMaterial({ color: 0x070707, metalness: 0, roughness: 0.95 }));
+    cloth.position.set(0, -0.3, -0.75);
+    cloth.rotation.x = -0.15; g.add(cloth);
+
+    // ── Front standard ──
+    add(new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.7, 0.05), metalMat), 0, 0, 0.8);
+    add(new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.6, 0.03), darkMetalMat), 0, 0, 0.82);
+
+    // ── Bellows folds ──
+    for (let i = 0; i < 12; i++) {
+        const t = i / 11;
+        const w = 0.42 + t * 0.33;
+        const h = 0.57 + t * 0.33;
+        const z = 0.75 - t * 1.5;
+        add(new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.055), i % 2 === 0 ? bellowsMat : bellowsMat2), 0, 0, z);
     }
-    la(new THREE.Mesh(new THREE.TorusGeometry(0.275, 0.008, 6, 28), mat(0x5a5a7a, 0.5, 0.25)), -0.52);
-    const gr = la(new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.018, 6, 28), mat(0x7c5cfc, 0.7, 0.15)), -0.53);
-    gr.material.emissive = new THREE.Color(0x7c5cfc); gr.material.emissiveIntensity = 0.2;
 
-    const fg = new THREE.MeshPhysicalMaterial({ color: 0x00d4aa, metalness: 0, roughness: 0, transparent: true, opacity: 0.15, envMapIntensity: 2, side: THREE.DoubleSide });
-    la(new THREE.Mesh(new THREE.CircleGeometry(0.2, 32), fg), -0.55);
-    la(new THREE.Mesh(new THREE.CircleGeometry(0.16, 28), new THREE.MeshPhysicalMaterial({ color: 0x14141f, metalness: 0.35, roughness: 0.3, side: THREE.DoubleSide })), -0.545);
-    la(new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.01, 6, 28), mat(0x5a5a7a, 0.6, 0.2)), -0.54);
-    const rd = new THREE.Mesh(new THREE.CircleGeometry(0.035, 12), new THREE.MeshBasicMaterial({ color: 0x7c5cfc, transparent: true, opacity: 0.3 }));
-    rd.position.set(0.05, 0.05, -0.548); lens.add(rd);
-    g.add(lens);
+    // ── Lens group ──
+    const lg = new THREE.Group(); lg.position.set(0, 0, 0.9); g.add(lg);
+    const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.18, 0.2, 24), lensMat);
+    barrel.rotation.x = Math.PI / 2; lg.add(barrel);
 
-    add(new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.018, 0.018), mat(0x5a5a7a, 0.5, 0.25)), -0.53, 0.17, -0.37);
-    add(new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.018, 0.018), mat(0xff6b9d, 0.25, 0.3)), 0.33, -0.06, -0.37);
-    add(new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.3, 0.015), mat(0x14141f, 0, 0.05)), -0.05, 0.04, 0.37);
-    add(new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.015, 0.015), mat(0x00d4aa, 0.5, 0.2)), -0.53, 0.29, -0.27);
-    add(new THREE.Mesh(new THREE.CircleGeometry(0.012, 10), new THREE.MeshBasicMaterial({ color: 0x7c5cfc })), -0.58, 0.24, -0.26);
+    const ringMat = new THREE.MeshPhysicalMaterial({ color: 0x5a5a6a, metalness: 0.8, roughness: 0.2 });
+    const r1 = new THREE.Mesh(new THREE.TorusGeometry(0.16, 0.022, 8, 24), ringMat);
+    r1.rotation.x = Math.PI / 2; r1.position.z = -0.04; lg.add(r1);
+    const r2 = new THREE.Mesh(new THREE.TorusGeometry(0.13, 0.018, 8, 24), ringMat);
+    r2.rotation.x = Math.PI / 2; r2.position.z = 0.07; lg.add(r2);
+    const r3 = new THREE.Mesh(new THREE.TorusGeometry(0.12, 0.014, 8, 24), brassMat);
+    r3.rotation.x = Math.PI / 2; r3.position.z = 0.11; lg.add(r3);
+
+    const lensFace = new THREE.Mesh(new THREE.CircleGeometry(0.11, 24), glassMat);
+    lensFace.position.z = 0.12; lg.add(lensFace);
+
+    // Lens knob
+    add(new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.035, 0.015), metalMat), 0.18, 0.13, 0.95);
+
+    // ── Brass corner fittings ──
+    for (const [cx, cy] of [[-0.28, 0.33], [0.28, 0.33], [-0.28, -0.33], [0.28, -0.33]]) {
+        add(new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.035, 0.018), brassMat), cx, cy, 0.83);
+    }
+
+    // ── Focus knob ──
+    const fk = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.025, 16), brassMat);
+    fk.rotation.z = Math.PI / 2; fk.position.set(0.3, 0.08, -0.2); g.add(fk);
+    const fkr = new THREE.Mesh(new THREE.TorusGeometry(0.055, 0.007, 6, 16), darkMetalMat);
+    fkr.rotation.y = Math.PI / 2; fkr.position.set(0.3, 0.08, -0.2); g.add(fkr);
 
     return g;
 }
 
-const camModel = buildCamera();
-camModel.position.y = 0.15;
-camModel.rotation.y = 0.3;
+const camModel = buildBellowsCamera();
+camModel.position.y = 0.1;
+camModel.rotation.y = -0.2;
 scene.add(camModel);
 
-const pCount = 500;
-const pos = new Float32Array(pCount * 3);
-for (let i = 0; i < pCount * 3; i++) pos[i] = (Math.random() - 0.5) * 12;
-const particles = new THREE.Points(
-    new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(pos, 3)),
-    new THREE.PointsMaterial({ color: 0x7c5cfc, size: 0.008, transparent: true, opacity: 0.08, blending: THREE.AdditiveBlending, sizeAttenuation: true })
+// ── Bokeh city-lights background ──
+const bokehCount = 300;
+const bp = new Float32Array(bokehCount * 3);
+const bc = new Float32Array(bokehCount * 3);
+const bs = new Float32Array(bokehCount);
+for (let i = 0; i < bokehCount; i++) {
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    const r = 12 + Math.random() * 18;
+    bp[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+    bp[i * 3 + 1] = (Math.random() - 0.5) * 20;
+    bp[i * 3 + 2] = -(8 + Math.random() * 25);
+    const c = Math.random();
+    if (c < 0.4) {
+        bc[i * 3] = 0.7 + Math.random() * 0.3; bc[i * 3 + 1] = 0.3 + Math.random() * 0.2; bc[i * 3 + 2] = 0.05 + Math.random() * 0.1;
+    } else if (c < 0.7) {
+        bc[i * 3] = 0.7 + Math.random() * 0.3; bc[i * 3 + 1] = 0.05 + Math.random() * 0.1; bc[i * 3 + 2] = 0.05 + Math.random() * 0.1;
+    } else {
+        bc[i * 3] = 0.1 + Math.random() * 0.2; bc[i * 3 + 1] = 0.1 + Math.random() * 0.2; bc[i * 3 + 2] = 0.5 + Math.random() * 0.4;
+    }
+    bs[i] = 0.04 + Math.random() * 0.35;
+}
+const bokeh = new THREE.Points(
+    new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(bp, 3)).setAttribute('color', new THREE.BufferAttribute(bc, 3)).setAttribute('size', new THREE.BufferAttribute(bs, 1)),
+    new THREE.PointsMaterial({ size: 0.2, vertexColors: true, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, sizeAttenuation: true, depthWrite: false })
 );
-scene.add(particles);
+scene.add(bokeh);
 
 const controls = new OrbitControls(cam, renderer.domElement);
 controls.target.set(0, 0.08, 0);
@@ -146,24 +206,6 @@ controls.autoRotateSpeed = 1.2;
 controls.minDistance = 2.5;
 controls.maxDistance = 8;
 controls.update();
-
-const gltfLoader = new GLTFLoader();
-gltfLoader.load(
-    'https://cdn.jsdelivr.net/gh/KhronosGroup/glTF-Sample-Models@master/2.0/VintageCamera/glTF-Binary/VintageCamera.glb',
-    (gltf) => {
-        const m = gltf.scene;
-        m.scale.set(1.6, 1.6, 1.6);
-        m.traverse(n => { if (n.isMesh) { n.castShadow = true; n.receiveShadow = true; } });
-        const box = new THREE.Box3().setFromObject(m);
-        const c = box.getCenter(new THREE.Vector3());
-        m.position.sub(c);
-        m.position.y = 0.12;
-        scene.remove(camModel);
-        scene.add(m);
-    },
-    undefined,
-    () => {}
-);
 
 let vw = w, vh = h, mx = 0, my = 0, tx = 0, ty = 0;
 document.addEventListener('mousemove', e => { mx = (e.clientX / vw) * 2 - 1; my = (e.clientY / vh) * 2 - 1; });
@@ -476,12 +518,12 @@ function animate() {
         camModel.rotation.x += ty * 0.003;
     }
     const t = Date.now() * 0.001;
-    const pp = particles.geometry.attributes.position.array;
-    for (let i = 0; i < pCount; i++) {
-        pp[i * 3 + 1] += Math.sin(t * 0.2 + i * 0.01) * 0.0003;
-        pp[i * 3] += Math.cos(t * 0.15 + i * 0.015) * 0.0002;
+    const pp = bokeh.geometry.attributes.position.array;
+    for (let i = 0; i < bokehCount; i++) {
+        pp[i * 3 + 1] += Math.sin(t * 0.1 + i * 0.02) * 0.0002;
+        pp[i * 3] += Math.cos(t * 0.08 + i * 0.015) * 0.00015;
     }
-    particles.geometry.attributes.position.needsUpdate = true;
+    bokeh.geometry.attributes.position.needsUpdate = true;
     controls.update();
     renderer.render(scene, cam);
     if (++fc === 5) loaderEl.classList.add('hidden');

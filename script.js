@@ -16,7 +16,7 @@ const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerP
 renderer.setSize(w, h);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.3;
+renderer.toneMappingExposure = 1.4;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -70,127 +70,189 @@ spill.rotation.x = -Math.PI / 2;
 spill.position.y = -0.54;
 scene.add(spill);
 
-function buildDSLRCamera() {
+function buildMirrorlessCamera() {
     const g = new THREE.Group();
 
-    const bodyMat = new THREE.MeshPhysicalMaterial({ color: 0x1a1a1a, metalness: 0.15, roughness: 0.55, clearcoat: 0.05 });
-    const gripMat = new THREE.MeshPhysicalMaterial({ color: 0x0d0d0d, metalness: 0, roughness: 0.95 });
-    const metalMat = new THREE.MeshPhysicalMaterial({ color: 0x444455, metalness: 0.85, roughness: 0.15, envMapIntensity: 1.5 });
-    const darkMetalMat = new THREE.MeshPhysicalMaterial({ color: 0x2a2a3a, metalness: 0.9, roughness: 0.1, envMapIntensity: 1.8 });
-    const lensMat = new THREE.MeshPhysicalMaterial({ color: 0x1a1a2a, metalness: 0.7, roughness: 0.25, envMapIntensity: 1.3 });
-    const goldMat = new THREE.MeshPhysicalMaterial({ color: 0x8a7a4a, metalness: 0.6, roughness: 0.2, envMapIntensity: 1.2 });
-    const glassMat = new THREE.MeshPhysicalMaterial({ color: 0x2244aa, metalness: 0, roughness: 0, transparent: true, opacity: 0.12, envMapIntensity: 3, side: THREE.DoubleSide });
+    const bodyMat = new THREE.MeshPhysicalMaterial({ color: 0x16161a, metalness: 0.18, roughness: 0.5, clearcoat: 0.06 });
+    const gripMat = new THREE.MeshPhysicalMaterial({ color: 0x0a0a0a, metalness: 0, roughness: 0.95, clearcoat: 0.02 });
+    const metalMat = new THREE.MeshPhysicalMaterial({ color: 0x3e3e4e, metalness: 0.88, roughness: 0.12, envMapIntensity: 1.6 });
+    const darkMetalMat = new THREE.MeshPhysicalMaterial({ color: 0x262636, metalness: 0.92, roughness: 0.08, envMapIntensity: 1.9 });
+    const lensMat = new THREE.MeshPhysicalMaterial({ color: 0x18182a, metalness: 0.72, roughness: 0.22, envMapIntensity: 1.4 });
+    const goldMat = new THREE.MeshPhysicalMaterial({ color: 0x8a7a4a, metalness: 0.6, roughness: 0.18, envMapIntensity: 1.3 });
+    const glassMat = new THREE.MeshPhysicalMaterial({ color: 0x1a3366, metalness: 0, roughness: 0, transparent: true, opacity: 0.10, envMapIntensity: 4, side: THREE.DoubleSide });
+    const screenMat = new THREE.MeshPhysicalMaterial({ color: 0x0a0a0a, metalness: 0, roughness: 0.05 });
 
     function add(m, x, y, z) { m.position.set(x, y, z); g.add(m); return m; }
 
-    // ── Main body ──
-    const body = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.72, 0.55), bodyMat);
-    body.position.y = 0.05;
+    const bodyY = 0.05;
+
+    // ── Main body (slimmer, flat top) ──
+    const body = new THREE.Mesh(new THREE.BoxGeometry(1.35, 0.62, 0.42), bodyMat);
+    body.position.y = bodyY + 0.01;
     body.castShadow = true; body.receiveShadow = true;
     g.add(body);
 
-    // ── Pentaprism hump ──
-    const prism = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.12, 0.28), darkMetalMat);
-    prism.position.set(0, 0.8, -0.1);
-    g.add(prism);
-    const prismTop = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.04, 0.22), metalMat);
-    prismTop.position.set(0, 0.86, -0.1);
-    g.add(prismTop);
+    // ── Top plate (flat mirrorless profile) ──
+    const topPlate = new THREE.Mesh(new THREE.BoxGeometry(1.28, 0.02, 0.38), darkMetalMat);
+    topPlate.position.set(0, bodyY + 0.33, 0);
+    g.add(topPlate);
 
-    // ── Rubber grip (left side for 3/4 view) ──
-    const grip = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.5, 0.08), gripMat);
-    grip.position.set(-0.72, 0.05, 0);
-    g.add(grip);
-    const gripR = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.4, 0.05), gripMat);
-    gripR.position.set(0.72, 0.08, 0);
-    g.add(gripR);
+    // ── Deep ergonomic grip (left side) ──
+    const gripMain = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.52, 0.14), gripMat);
+    gripMain.position.set(-0.72, bodyY, 0);
+    g.add(gripMain);
+    // Secondary grip texture layer
+    const gripTex = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.44, 0.06), new THREE.MeshPhysicalMaterial({ color: 0x080808, metalness: 0, roughness: 0.98 }));
+    gripTex.position.set(-0.7, bodyY, 0.03);
+    g.add(gripTex);
+
+    // Thumb grip (right side)
+    const thumbGrip = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.3, 0.04), gripMat);
+    thumbGrip.position.set(0.72, bodyY + 0.08, 0);
+    g.add(thumbGrip);
 
     // ── Bottom plate ──
-    add(new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.03, 0.5), metalMat), 0, -0.31, 0);
-    // Tripod mount
-    add(new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.05, 0.02, 12), darkMetalMat), 0, -0.33, 0);
+    add(new THREE.Mesh(new THREE.BoxGeometry(1.15, 0.025, 0.38), metalMat), 0, bodyY - 0.32, 0);
+    add(new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.045, 0.015, 12), darkMetalMat), 0, bodyY - 0.34, 0);
 
-    // ── Top dials ──
-    add(new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.08, 0.035, 20), metalMat), -0.4, 0.84, 0.15);
-    add(new THREE.Mesh(new THREE.TorusGeometry(0.075, 0.007, 6, 20), darkMetalMat), -0.4, 0.84, 0.15);
-    add(new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.06, 0.025, 18), metalMat), 0.45, 0.84, 0.12);
-    // Shutter button
-    add(new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.045, 0.025, 14), darkMetalMat), 0.35, 0.84, 0.12);
+    // ── EVF / viewfinder bump (left side top) ──
+    const evf = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.08, 0.24), darkMetalMat);
+    evf.position.set(-0.35, bodyY + 0.37, -0.08);
+    g.add(evf);
+    const evfTop = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.025, 0.18), metalMat);
+    evfTop.position.set(-0.35, bodyY + 0.405, -0.08);
+    g.add(evfTop);
+    // Eyecup
+    const eyecup = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.04, 0.05), gripMat);
+    eyecup.position.set(-0.35, bodyY + 0.38, -0.2);
+    g.add(eyecup);
 
-    // ── Hot shoe ──
-    add(new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.02, 0.08), metalMat), 0, 0.88, -0.15);
+    // ── Top status LCD screen ──
+    const lcdBezel = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.01, 0.12), metalMat);
+    lcdBezel.position.set(0.3, bodyY + 0.34, 0.16);
+    g.add(lcdBezel);
+    const lcdScreen = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.005, 0.09), new THREE.MeshPhysicalMaterial({ color: 0x111a22, metalness: 0, roughness: 0.05, emissive: 0x223355, emissiveIntensity: 0.03 }));
+    lcdScreen.position.set(0.3, bodyY + 0.345, 0.16);
+    g.add(lcdScreen);
 
-    // ── Viewfinder ──
-    add(new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.035, 0.05), new THREE.MeshPhysicalMaterial({ color: 0x050505, metalness: 0, roughness: 0.1 })), 0, 0.85, -0.27);
+    // ── Dials ──
+    // Main mode dial (top left, near EVF)
+    add(new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.075, 0.03, 22), metalMat), -0.1, bodyY + 0.365, 0.16);
+    add(new THREE.Mesh(new THREE.TorusGeometry(0.07, 0.006, 6, 22), darkMetalMat), -0.1, bodyY + 0.365, 0.16);
+    // Exposure dial (top right)
+    add(new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.065, 0.025, 20), metalMat), 0.55, bodyY + 0.36, 0.16);
+    add(new THREE.Mesh(new THREE.TorusGeometry(0.06, 0.005, 6, 20), darkMetalMat), 0.55, bodyY + 0.36, 0.16);
+    // Rear dial (small, below)
+    add(new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.04, 0.018, 16), metalMat), 0.5, bodyY + 0.16, 0.22);
 
-    // ── Body bevels / edges ──
-    add(new THREE.Mesh(new THREE.BoxGeometry(1.35, 0.01, 0.52), new THREE.MeshPhysicalMaterial({ color: 0x222222, metalness: 0.2, roughness: 0.6 })), 0, 0.41, 0);
+    // ── Shutter button ──
+    const shutterBtn = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.04, 0.02, 14), darkMetalMat);
+    shutterBtn.position.set(0.38, bodyY + 0.36, 0.18);
+    g.add(shutterBtn);
+    // Shutter surround
+    add(new THREE.Mesh(new THREE.TorusGeometry(0.038, 0.006, 6, 14), metalMat), 0.38, bodyY + 0.35, 0.18);
 
-    // ── Lens mount ──
-    add(new THREE.Mesh(new THREE.TorusGeometry(0.23, 0.02, 8, 28), darkMetalMat), 0, 0.05, 0.28);
+    // ── Hot shoe (smaller) ──
+    add(new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.015, 0.06), metalMat), -0.05, bodyY + 0.4, -0.1);
+
+    // ── Customizable button (Fn) ──
+    add(new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.015, 0.015), darkMetalMat), -0.5, bodyY + 0.34, 0.18);
+
+    // ── Lens mount (slightly larger relative to body) ──
+    add(new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.02, 8, 28), darkMetalMat), 0, bodyY, 0.22);
+    // Inner mount ring
+    add(new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.012, 8, 28), metalMat), 0, bodyY, 0.235);
+
     const lensGroup = new THREE.Group();
-    lensGroup.position.set(0, 0.05, 0.3);
+    lensGroup.position.set(0, bodyY, 0.25);
     g.add(lensGroup);
 
-    // ── Lens barrel segments ──
-    const lb1 = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.23, 0.07, 28), lensMat);
+    // ── Lens barrel segments (50mm f/1.2 GM / RF) ──
+    // Mount base
+    const lb1 = new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.24, 0.06, 30), lensMat);
     lb1.rotation.x = Math.PI / 2; lensGroup.add(lb1);
-    const lb2 = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.18, 0.28, 28), lensMat);
-    lb2.rotation.x = Math.PI / 2; lb2.position.z = 0.18; lensGroup.add(lb2);
-    const lb3 = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.16, 0.05, 28), darkMetalMat);
-    lb3.rotation.x = Math.PI / 2; lb3.position.z = 0.34; lensGroup.add(lb3);
+    // Main barrel
+    const lb2 = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.19, 0.26, 30), lensMat);
+    lb2.rotation.x = Math.PI / 2; lb2.position.z = 0.16; lensGroup.add(lb2);
+    // Front barrel
+    const lb3 = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.17, 0.05, 30), darkMetalMat);
+    lb3.rotation.x = Math.PI / 2; lb3.position.z = 0.32; lensGroup.add(lb3);
 
-    // ── Focus ring (ridged rubber) ──
-    const frMat = new THREE.MeshPhysicalMaterial({ color: 0x2a2a2a, metalness: 0.05, roughness: 0.85 });
-    const fRing = new THREE.Mesh(new THREE.CylinderGeometry(0.175, 0.17, 0.08, 28), frMat);
-    fRing.rotation.x = Math.PI / 2; fRing.position.z = 0.08; lensGroup.add(fRing);
-    for (let i = 0; i < 18; i++) {
-        const a = (i / 18) * Math.PI * 2;
-        const rg = new THREE.Mesh(new THREE.BoxGeometry(0.004, 0.07, 0.015), darkMetalMat);
-        rg.position.set(Math.cos(a) * 0.176, Math.sin(a) * 0.176, 0.08);
-        rg.lookAt(0, 0, 0.08); lensGroup.add(rg);
+    // ── Focus ring (wide, metallic) ──
+    const frMat = new THREE.MeshPhysicalMaterial({ color: 0x2a2a30, metalness: 0.6, roughness: 0.35 });
+    const fRing = new THREE.Mesh(new THREE.CylinderGeometry(0.185, 0.18, 0.09, 30), frMat);
+    fRing.rotation.x = Math.PI / 2; fRing.position.z = 0.07; lensGroup.add(fRing);
+    // Focus ring ridges
+    for (let i = 0; i < 20; i++) {
+        const a = (i / 20) * Math.PI * 2;
+        const rg = new THREE.Mesh(new THREE.BoxGeometry(0.003, 0.08, 0.017), darkMetalMat);
+        rg.position.set(Math.cos(a) * 0.186, Math.sin(a) * 0.186, 0.07);
+        rg.lookAt(0, 0, 0.07); lensGroup.add(rg);
     }
 
-    // ── Gold accent ring ──
-    add(new THREE.Mesh(new THREE.TorusGeometry(0.16, 0.007, 6, 28), goldMat), 0, 0.05, 0.38);
+    // ── Gold ring ──
+    add(new THREE.Mesh(new THREE.TorusGeometry(0.165, 0.006, 6, 28), goldMat), 0, bodyY, 0.36);
 
-    // ── Crimson L-series ring ──
-    const crimsonRingMat = new THREE.MeshPhysicalMaterial({ color: 0xcc2244, metalness: 0.3, roughness: 0.2, emissive: 0x881133, emissiveIntensity: 0.05 });
-    add(new THREE.Mesh(new THREE.TorusGeometry(0.185, 0.008, 6, 28), crimsonRingMat), 0, 0.05, 0.34);
+    // ── Crimson G-master / L-series ring ──
+    const crimsonRingMat = new THREE.MeshPhysicalMaterial({ color: 0xcc2244, metalness: 0.25, roughness: 0.18, emissive: 0x881133, emissiveIntensity: 0.08 });
+    add(new THREE.Mesh(new THREE.TorusGeometry(0.19, 0.007, 6, 28), crimsonRingMat), 0, bodyY, 0.32);
 
     // ── Filter thread ──
-    add(new THREE.Mesh(new THREE.TorusGeometry(0.17, 0.009, 6, 28), metalMat), 0, 0.05, 0.37);
+    add(new THREE.Mesh(new THREE.TorusGeometry(0.175, 0.008, 6, 28), metalMat), 0, bodyY, 0.35);
 
-    // ── Front lens glass (multi-coated) ──
-    const frontGlass = new THREE.Mesh(new THREE.CircleGeometry(0.15, 32), glassMat);
-    frontGlass.position.z = 0.38; lensGroup.add(frontGlass);
+    // ── Multi-coated front lens glass ──
+    const frontGlass = new THREE.Mesh(new THREE.CircleGeometry(0.155, 36), glassMat);
+    frontGlass.position.z = 0.36; lensGroup.add(frontGlass);
 
-    // Inner glass with deeper reflection
-    const innerGlassMat = new THREE.MeshPhysicalMaterial({ color: 0x3355bb, metalness: 0, roughness: 0, transparent: true, opacity: 0.06, envMapIntensity: 5, side: THREE.DoubleSide });
-    const innerGlass = new THREE.Mesh(new THREE.CircleGeometry(0.12, 32), innerGlassMat);
-    innerGlass.position.z = 0.36; lensGroup.add(innerGlass);
+    // Inner glass (deeper reflection)
+    const innerGlassMat = new THREE.MeshPhysicalMaterial({ color: 0x2244aa, metalness: 0, roughness: 0, transparent: true, opacity: 0.05, envMapIntensity: 6, side: THREE.DoubleSide });
+    const innerGlass = new THREE.Mesh(new THREE.CircleGeometry(0.125, 32), innerGlassMat);
+    innerGlass.position.z = 0.34; lensGroup.add(innerGlass);
 
-    // ── Glass reflection highlights ──
-    const h1 = new THREE.Mesh(new THREE.CircleGeometry(0.035, 16), new THREE.MeshBasicMaterial({ color: 0x4488ff, transparent: true, opacity: 0.18 }));
-    h1.position.set(0.05, 0.05, 0.39); lensGroup.add(h1);
-    const h2 = new THREE.Mesh(new THREE.CircleGeometry(0.02, 12), new THREE.MeshBasicMaterial({ color: 0xff4488, transparent: true, opacity: 0.1 }));
-    h2.position.set(-0.04, -0.035, 0.39); lensGroup.add(h2);
-    const h3 = new THREE.Mesh(new THREE.CircleGeometry(0.015, 10), new THREE.MeshBasicMaterial({ color: 0x8844ff, transparent: true, opacity: 0.08 }));
-    h3.position.set(0.07, -0.02, 0.39); lensGroup.add(h3);
+    // Deepest glass layer (violet tint)
+    const deepGlassMat = new THREE.MeshPhysicalMaterial({ color: 0x6622aa, metalness: 0, roughness: 0, transparent: true, opacity: 0.03, envMapIntensity: 4, side: THREE.DoubleSide });
+    const deepGlass = new THREE.Mesh(new THREE.CircleGeometry(0.1, 28), deepGlassMat);
+    deepGlass.position.z = 0.32; lensGroup.add(deepGlass);
 
-    // ── Small details ──
-    // AF assist / brand area
-    add(new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.012, 0.01), new THREE.MeshBasicMaterial({ color: 0x441a1a })), -0.62, 0.25, 0.28);
-    add(new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.012, 0.005), new THREE.MeshPhysicalMaterial({ color: 0x2a2a2a, metalness: 0.4, roughness: 0.3 })), 0.3, 0.25, 0.28);
-    // Flash sync port
-    add(new THREE.Mesh(new THREE.CircleGeometry(0.02, 12), new THREE.MeshPhysicalMaterial({ color: 0x111111, metalness: 0.6, roughness: 0.2 })), -0.35, 0.22, 0.28);
+    // ── Glass reflection highlights (multi-coated) ──
+    // Blue reflection (large, top-right)
+    const hBlue = new THREE.Mesh(new THREE.CircleGeometry(0.04, 16), new THREE.MeshBasicMaterial({ color: 0x4499ff, transparent: true, opacity: 0.2 }));
+    hBlue.position.set(0.06, 0.055, 0.365); lensGroup.add(hBlue);
+    // Crimson reflection (small, bottom-left)
+    const hCrimson = new THREE.Mesh(new THREE.CircleGeometry(0.022, 12), new THREE.MeshBasicMaterial({ color: 0xff3366, transparent: true, opacity: 0.12 }));
+    hCrimson.position.set(-0.045, -0.04, 0.365); lensGroup.add(hCrimson);
+    // Violet reflection (medium, mid-right)
+    const hViolet = new THREE.Mesh(new THREE.CircleGeometry(0.018, 10), new THREE.MeshBasicMaterial({ color: 0x8844ff, transparent: true, opacity: 0.09 }));
+    hViolet.position.set(0.075, -0.015, 0.365); lensGroup.add(hViolet);
+    // Amber reflection (tiny, bottom-right)
+    const hAmber = new THREE.Mesh(new THREE.CircleGeometry(0.012, 8), new THREE.MeshBasicMaterial({ color: 0xff8844, transparent: true, opacity: 0.06 }));
+    hAmber.position.set(0.035, -0.06, 0.365); lensGroup.add(hAmber);
+
+    // ── Crimson glow ring on glass edge ──
+    const glowRing = new THREE.Mesh(new THREE.RingGeometry(0.145, 0.155, 36), new THREE.MeshBasicMaterial({ color: 0xff2244, transparent: true, opacity: 0.07, side: THREE.DoubleSide, depthWrite: false }));
+    glowRing.position.z = 0.361; lensGroup.add(glowRing);
+
+    // ── Body details ──
+    // AF assist light / sensor
+    add(new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.01, 0.01), new THREE.MeshBasicMaterial({ color: 0x331111 })), -0.58, bodyY + 0.22, 0.22);
+    // Brand text area (subtle bump)
+    add(new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.008, 0.004), new THREE.MeshPhysicalMaterial({ color: 0x222228, metalness: 0.3, roughness: 0.4 })), 0.25, bodyY + 0.32, 0.22);
+    // Strap lug (left)
+    add(new THREE.Mesh(new THREE.TorusGeometry(0.02, 0.008, 6, 10), darkMetalMat), -0.65, bodyY + 0.28, -0.2);
+    // Strap lug (right)
+    add(new THREE.Mesh(new THREE.TorusGeometry(0.02, 0.008, 6, 10), darkMetalMat), 0.65, bodyY + 0.28, -0.2);
+    // Front grip texture lines (subtle grooves)
+    for (let i = 0; i < 4; i++) {
+        const yy = bodyY - 0.08 + i * 0.05;
+        add(new THREE.Mesh(new THREE.BoxGeometry(0.005, 0.002, 0.1), new THREE.MeshPhysicalMaterial({ color: 0x050505, metalness: 0, roughness: 1 })), -0.58, yy, 0.15);
+    }
 
     return g;
 }
 
-const camModel = buildDSLRCamera();
-camModel.position.y = 0.05;
-camModel.rotation.y = -0.3;
+const camModel = buildMirrorlessCamera();
+camModel.position.y = 0.0;
+camModel.rotation.y = -0.35;
 scene.add(camModel);
 
 // ── Bokeh city-lights background ──
@@ -222,7 +284,7 @@ const bokeh = new THREE.Points(
 scene.add(bokeh);
 
 const controls = new OrbitControls(cam, renderer.domElement);
-controls.target.set(0, 0.08, 0);
+controls.target.set(0, 0.0, 0);
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
 controls.autoRotate = true;

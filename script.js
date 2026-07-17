@@ -228,7 +228,6 @@ camModel.rotation.y = -0.35;
 scene.add(camModel);
 
 // ── Bokeh city-lights background ──
-const bokehCount = 300;
 const bp = new Float32Array(bokehCount * 3);
 const bc = new Float32Array(bokehCount * 3);
 const bs = new Float32Array(bokehCount);
@@ -480,7 +479,6 @@ const vfCanvas = document.getElementById('vfCanvas');
 if (cameraBtn && cameraOverlay) {
     let shooting = false;
     let cameraStream = null;
-    let photoIndex = 0;
 
     function stopCamera() {
         if (cameraStream) {
@@ -500,21 +498,25 @@ if (cameraBtn && cameraOverlay) {
         ctx.drawImage(vfVideo, 0, 0, vfCanvas.width, vfCanvas.height);
         const dataUrl = vfCanvas.toDataURL('image/jpeg', 0.85);
 
-        // Create gallery item dynamically
-        const item = document.createElement('div');
-        item.className = 'gallery-item';
-        item.innerHTML = '<div class="gallery-img"><img src="' + dataUrl + '" alt=""></div>';
-        galleryGrid.insertBefore(item, galleryPlaceholder);
+        let item = galleryGrid.querySelector('.gallery-item');
+        if (item) {
+            item.querySelector('img').src = dataUrl;
+        } else {
+            item = document.createElement('div');
+            item.className = 'gallery-item';
+            item.innerHTML = '<div class="gallery-img"><img src="' + dataUrl + '" alt=""></div>';
+            galleryGrid.insertBefore(item, galleryPlaceholder);
+        }
+        galleryGrid.classList.add('has-photos');
     }
 
     cameraBtn.addEventListener('click', () => {
         if (shooting) return;
         shooting = true;
 
-        // Request camera
         const startCamera = new Promise((resolve) => {
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false })
+                navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false })
                     .then(stream => {
                         cameraStream = stream;
                         vfVideo.srcObject = stream;
@@ -529,7 +531,6 @@ if (cameraBtn && cameraOverlay) {
         });
 
         startCamera.then(hasCamera => {
-            // Reset
             shutterTop.classList.remove('active');
             shutterBottom.classList.remove('active');
             cameraFlash.classList.remove('active');
@@ -538,20 +539,17 @@ if (cameraBtn && cameraOverlay) {
             cameraOverlay.classList.remove('done');
             cameraOverlay.classList.add('active');
 
-            // Phase 1 — Viewfinder info dance
             const phases = ['AF', 'MF', 'AF'];
             let pi = 0;
             const infoInterval = setInterval(() => {
                 vfInfoLeft.textContent = phases[pi++ % 3];
             }, 200);
 
-            // Phase 2 — Focus box search
             setTimeout(() => {
                 vfFocusBox.classList.add('active');
                 progressText.textContent = 'ENFOCANDO';
             }, 400);
 
-            // Phase 3 — Focus locked
             setTimeout(() => {
                 clearInterval(infoInterval);
                 vfInfoLeft.textContent = 'AF';
@@ -561,13 +559,11 @@ if (cameraBtn && cameraOverlay) {
                 progressText.textContent = 'BLOQUEADO';
             }, 1200);
 
-            // Phase 4 — Aperture closes
             setTimeout(() => {
                 cameraAperture.classList.add('active');
                 progressText.textContent = 'F/2.8';
             }, 1800);
 
-            // Phase 5 — Shutter fires + capture
             setTimeout(() => {
                 cameraAperture.classList.remove('active');
                 shutterTop.classList.add('active');
@@ -576,7 +572,6 @@ if (cameraBtn && cameraOverlay) {
                 if (hasCamera) capturePhoto();
             }, 2100);
 
-            // Phase 6 — Flash + reveal
             setTimeout(() => {
                 cameraFlash.classList.add('active');
                 shutterTop.classList.remove('active');
@@ -609,28 +604,6 @@ const statsObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.5 });
 const statsEl = document.querySelector('.stats');
 if (statsEl) statsObserver.observe(statsEl);
-
-let fc = 0;
-function animate() {
-    requestAnimationFrame(animate);
-    tx += (mx - tx) * 0.04;
-    ty += (my - ty) * 0.04;
-    if (camModel.parent) {
-        camModel.rotation.y += tx * 0.005;
-        camModel.rotation.x += ty * 0.003;
-    }
-    const t = Date.now() * 0.001;
-    const pp = bokeh.geometry.attributes.position.array;
-    for (let i = 0; i < bokehCount; i++) {
-        pp[i * 3 + 1] += Math.sin(t * 0.1 + i * 0.02) * 0.0002;
-        pp[i * 3] += Math.cos(t * 0.08 + i * 0.015) * 0.00015;
-    }
-    bokeh.geometry.attributes.position.needsUpdate = true;
-    controls.update();
-    renderer.render(scene, cam);
-    if (++fc === 5) loaderEl.classList.add('hidden');
-}
-animate();
 
 window.addEventListener('resize', () => {
     vw = window.innerWidth; vh = window.innerHeight;

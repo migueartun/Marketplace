@@ -365,23 +365,31 @@ const revealObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.15 });
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-// ── Typewriter effect (types, pauses, deletes, loops) ──
+// ── Typewriter effect (smooth rAF-based, types, pauses, deletes, loops) ──
 const tw = document.querySelector('.typewriter');
 if (tw) {
     const text = tw.dataset.text || '';
     tw.textContent = '';
-    let ti = 0, dir = 1;
-    function twStep() {
+    let pos = 0, dir = 1, lastTime = 0;
+    function twStep(timestamp) {
+        if (!lastTime) lastTime = timestamp;
+        const delta = timestamp - lastTime;
         if (dir === 1) {
-            tw.textContent += text[ti++];
-            if (ti >= text.length) { dir = -1; setTimeout(twStep, 2200); return; }
+            const n = Math.min(pos + Math.max(1, Math.floor(delta / 55)), text.length);
+            tw.textContent = text.slice(0, n);
+            pos = n;
+            lastTime = timestamp;
+            if (pos >= text.length) { dir = -1; lastTime = 0; setTimeout(() => requestAnimationFrame(twStep), 2400); return; }
         } else {
-            tw.textContent = text.slice(0, --ti);
-            if (ti <= 0) { dir = 1; setTimeout(twStep, 800); return; }
+            const n = Math.max(pos - Math.max(1, Math.floor(delta / 35)), 0);
+            tw.textContent = text.slice(0, n);
+            pos = n;
+            lastTime = timestamp;
+            if (pos <= 0) { dir = 1; lastTime = 0; setTimeout(() => requestAnimationFrame(twStep), 700); return; }
         }
-        setTimeout(twStep, dir === 1 ? 70 : 35);
+        requestAnimationFrame(twStep);
     }
-    twStep();
+    requestAnimationFrame(twStep);
 }
 
 // ── Carousel click to pause/resume ──

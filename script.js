@@ -14,10 +14,14 @@ cam.position.set(4, 1.8, 5.2);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
 renderer.setSize(w, h);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.6;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.setAnimationLoop(null); // manual loop
+
+// ── Bokeh ──
+const bokehCount = 120;
 container.appendChild(renderer.domElement);
 
 const pmrem = new THREE.PMREMGenerator(renderer);
@@ -256,16 +260,46 @@ controls.target.set(0, 0.0, 0);
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
 controls.autoRotate = true;
-controls.autoRotateSpeed = 1.2;
+controls.autoRotateSpeed = 0.8;
 controls.minDistance = 2.5;
 controls.maxDistance = 8;
 controls.update();
 
-let vw = w, vh = h, mx = 0, my = 0, tx = 0, ty = 0;
+let vw = w, vh = h, mx = 0, my = 0, tx = 0, ty = 0, fc = 0, skip = 0;
+let sceneActive = true;
 document.addEventListener('mousemove', e => { mx = (e.clientX / vw) * 2 - 1; my = (e.clientY / vh) * 2 - 1; });
 document.addEventListener('touchmove', e => { if (e.touches.length === 1) { mx = (e.touches[0].clientX / vw) * 2 - 1; my = (e.touches[0].clientY / vh) * 2 - 1; } }, { passive: true });
 
-// ── Mobile menu ──
+// ── Stop 3D when hero is off-screen ──
+const heroEl = document.getElementById('hero');
+const heroObs = new IntersectionObserver(([e]) => {
+    sceneActive = e.isIntersecting;
+}, { threshold: 0 });
+heroObs.observe(heroEl);
+
+function animate() {
+    if (!sceneActive) { requestAnimationFrame(animate); return; }
+    requestAnimationFrame(animate);
+    tx += (mx - tx) * 0.04;
+    ty += (my - ty) * 0.04;
+    if (camModel.parent) {
+        camModel.rotation.y += tx * 0.005;
+        camModel.rotation.x += ty * 0.003;
+    }
+    if (++skip % 2 === 0) {
+        const t = Date.now() * 0.001;
+        const pp = bokeh.geometry.attributes.position.array;
+        for (let i = 0; i < bokehCount; i++) {
+            pp[i * 3 + 1] += Math.sin(t * 0.1 + i * 0.02) * 0.0002;
+            pp[i * 3] += Math.cos(t * 0.08 + i * 0.015) * 0.00015;
+        }
+        bokeh.geometry.attributes.position.needsUpdate = true;
+    }
+    controls.update();
+    renderer.render(scene, cam);
+    if (++fc === 5) loaderEl.classList.add('hidden');
+}
+animate();
 document.querySelector('.mobile-btn').addEventListener('click', () => {
     document.getElementById('navGroup').classList.toggle('open');
 });

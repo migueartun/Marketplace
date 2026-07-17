@@ -23,12 +23,17 @@
         <nav>
             <a href="#" class="logo">LUX<span>ARS</span></a>
             <button class="mobile-btn" aria-label="Men&uacute;">&#9776;</button>
-            <ul class="nav-links">
-                <li><a href="#featured">Talento</a></li>
-                <li><a href="#como-funciona">C&oacute;mo funciona</a></li>
-                <li><a href="#galeria">Galer&iacute;a</a></li>
-                <li><a href="#" class="nav-cta" data-modal="unirse">Unirse</a></li>
-            </ul>
+            <div class="glass-nav-group" id="navGroup">
+                <input type="radio" name="nav" id="nav-talento" checked />
+                <label for="nav-talento"><a href="#featured">Talento</a></label>
+                <input type="radio" name="nav" id="nav-como" />
+                <label for="nav-como"><a href="#como-funciona">C&oacute;mo funciona</a></label>
+                <input type="radio" name="nav" id="nav-galeria" />
+                <label for="nav-galeria"><a href="#galeria">Galer&iacute;a</a></label>
+                <input type="radio" name="nav" id="nav-unirse" />
+                <label for="nav-unirse"><a href="#" data-modal="unirse">Unirse</a></label>
+                <div class="glass-glider"></div>
+            </div>
         </nav>
         <div class="hero-content">
             <span class="badge frosted-badge">Marketplace de Fot&oacute;grafos</span>

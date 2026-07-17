@@ -267,19 +267,25 @@ document.addEventListener('touchmove', e => { if (e.touches.length === 1) { mx =
 
 // ── Mobile menu ──
 document.querySelector('.mobile-btn').addEventListener('click', () => {
-    document.querySelector('.nav-links').classList.toggle('open');
+    document.getElementById('navGroup').classList.toggle('open');
 });
-document.querySelectorAll('.nav-links a').forEach(a => {
-    a.addEventListener('click', () => document.querySelector('.nav-links').classList.remove('open'));
+document.querySelectorAll('#navGroup label a').forEach(a => {
+    a.addEventListener('click', () => document.getElementById('navGroup').classList.remove('open'));
 });
 
-// ── Smooth scroll for hash links ──
+// ── Smooth scroll for hash links + sync radio ──
 document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
         const id = a.getAttribute('href');
         if (id === '#') return;
         const el = document.querySelector(id);
         if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+        // Sync glass nav radio
+        const label = a.closest('label');
+        if (label) {
+            const input = document.getElementById(label.getAttribute('for'));
+            if (input) input.checked = true;
+        }
     });
 });
 

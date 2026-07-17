@@ -16,22 +16,22 @@ const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerP
 renderer.setSize(w, h);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.4;
+renderer.toneMappingExposure = 1.6;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 container.appendChild(renderer.domElement);
 
 const pmrem = new THREE.PMREMGenerator(renderer);
 scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
 
-// ── Crimson key light ──
-const key = new THREE.DirectionalLight(0xff4433, 5);
-key.position.set(6, 8, 3);
-scene.add(key);
+// ── Sharp crimson neon rim light (left silhouette) ──
+const rim = new THREE.DirectionalLight(0xff2244, 5.5);
+rim.position.set(-6, 4, -2);
+scene.add(rim);
 
-// ── Warm amber edge light ──
-const amber = new THREE.DirectionalLight(0xff8833, 2.5);
-amber.position.set(-5, 1, -4);
-scene.add(amber);
+// ── Soft white accent light (right side) ──
+const accent = new THREE.DirectionalLight(0xffeedd, 3.5);
+accent.position.set(5, 3, 4);
+scene.add(accent);
 
 // ── Cool fill ──
 const fill = new THREE.DirectionalLight(0x4466aa, 0.6);
@@ -39,9 +39,9 @@ fill.position.set(-3, 2, 5);
 scene.add(fill);
 
 // ── Ruby accent from below ──
-const rubyAccent = new THREE.PointLight(0xcc2244, 0.6, 5);
-rubyAccent.position.set(1.2, -0.6, 1.5);
-scene.add(rubyAccent);
+const ruby = new THREE.PointLight(0xcc2244, 0.8, 5);
+ruby.position.set(0.5, -0.8, 1.5);
+scene.add(ruby);
 
 function buildMirrorlessCamera() {
     const g = new THREE.Group();

@@ -605,6 +605,126 @@ const statsObserver = new IntersectionObserver((entries) => {
 const statsEl = document.querySelector('.stats');
 if (statsEl) statsObserver.observe(statsEl);
 
+// ── Photographers module ──
+import { photographers } from './photographers-data.js';
+
+function generateFeaturedCards() {
+    const grid = document.getElementById('featuredGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    photographers.forEach((p, i) => {
+        const card = document.createElement('div');
+        card.className = 'featured-card reveal';
+        card.style.animationDelay = (i * 0.1) + 's';
+        card.innerHTML = `
+            <div class="featured-card-image">
+                <img src="${p.profileImage}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#1a1a1a,#111111)'">
+            </div>
+            <div class="featured-card-body">
+                <h3>${p.name}</h3>
+                <span class="featured-card-specialty">${p.specialties.slice(0, 2).join(' &bull; ')}</span>
+                <div class="featured-card-meta">
+                    <span>&#9733; ${p.rating}</span>
+                    <span>${p.projectsCount} proyectos</span>
+                </div>
+                <button class="featured-card-btn" data-id="${p.id}">
+                    Ver Portafolio
+                    <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </button>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+    // Re-run reveal observer for new cards
+    document.querySelectorAll('.reveal').forEach(el => {
+        if (el.classList.contains('visible')) return;
+        revealObserver.observe(el);
+    });
+    // Attach click listeners
+    grid.querySelectorAll('.featured-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+            const btn = card.querySelector('.featured-card-btn');
+            const id = parseInt(btn.dataset.id);
+            openProfileModal(id);
+        });
+    });
+}
+
+function openProfileModal(id) {
+    const p = photographers.find(x => x.id === id);
+    if (!p) return;
+    const modal = document.getElementById('modal-profile');
+    if (!modal) return;
+    document.getElementById('profImg').src = p.profileImage;
+    document.getElementById('profImg').alt = p.name;
+    document.getElementById('profName').textContent = p.name;
+    document.getElementById('profPhone').textContent = p.phone;
+    document.getElementById('profCity').textContent = p.city;
+    document.getElementById('profStudio').textContent = p.studioName;
+    document.getElementById('profBio').textContent = p.bio;
+    document.getElementById('profRating').innerHTML = '&#9733; ' + p.rating;
+    document.getElementById('profProjects').textContent = p.projectsCount;
+    const tagsContainer = document.getElementById('profSpecialties');
+    tagsContainer.innerHTML = '';
+    p.specialties.forEach(s => {
+        const tag = document.createElement('span');
+        tag.className = 'prof-spec-tag';
+        tag.textContent = s;
+        tagsContainer.appendChild(tag);
+    });
+    // Generate gallery
+    const gallery = document.getElementById('profGallery');
+    gallery.innerHTML = '';
+    p.portfolio.forEach((url, idx) => {
+        const item = document.createElement('div');
+        item.className = 'prof-gallery-item';
+        item.innerHTML = `<img src="${url}" alt="Trabajo ${idx + 1}" loading="lazy" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#1a1a1a,#111111)'">`;
+        item.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openLightbox(p.portfolio, idx);
+        });
+        gallery.appendChild(item);
+    });
+    modal.classList.add('active');
+}
+
+// ── Lightbox ──
+let lbImages = [];
+let lbIndex = 0;
+function openLightbox(images, index) {
+    lbImages = images;
+    lbIndex = index;
+    updateLightbox();
+    document.getElementById('modal-lightbox').classList.add('active');
+}
+function updateLightbox() {
+    document.getElementById('lbImage').src = lbImages[lbIndex];
+    document.getElementById('lbImage').alt = 'Trabajo ' + (lbIndex + 1);
+    document.getElementById('lbCounter').textContent = (lbIndex + 1) + ' / ' + lbImages.length;
+}
+document.getElementById('lbPrev').addEventListener('click', () => {
+    lbIndex = (lbIndex - 1 + lbImages.length) % lbImages.length;
+    updateLightbox();
+});
+document.getElementById('lbNext').addEventListener('click', () => {
+    lbIndex = (lbIndex + 1) % lbImages.length;
+    updateLightbox();
+});
+document.addEventListener('keydown', e => {
+    const lb = document.getElementById('modal-lightbox');
+    if (!lb.classList.contains('active')) return;
+    if (e.key === 'ArrowLeft') { document.getElementById('lbPrev').click(); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { document.getElementById('lbNext').click(); e.preventDefault(); }
+});
+
+// ── Lightbox close ──
+document.querySelector('.lightbox-close').addEventListener('click', () => {
+    document.getElementById('modal-lightbox').classList.remove('active');
+});
+
+// Init
+generateFeaturedCards();
+
 window.addEventListener('resize', () => {
     vw = window.innerWidth; vh = window.innerHeight;
     cam.aspect = vw / vh;

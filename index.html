@@ -24,12 +24,12 @@
             <a href="#" class="logo">LUX<span>ARS</span></a>
             <button class="mobile-btn" aria-label="Men&uacute;">&#9776;</button>
             <div class="glass-nav-group" id="navGroup">
-                <input type="radio" name="nav" id="nav-talento" checked />
-                <label for="nav-talento"><a href="#featured">Talento</a></label>
+                <input type="radio" name="nav" id="nav-especialidades" checked />
+                <label for="nav-especialidades"><a href="#especialidades">Especialidades</a></label>
                 <input type="radio" name="nav" id="nav-como" />
                 <label for="nav-como"><a href="#como-funciona">C&oacute;mo funciona</a></label>
-                <input type="radio" name="nav" id="nav-galeria" />
-                <label for="nav-galeria"><a href="#galeria">Galer&iacute;a</a></label>
+                <input type="radio" name="nav" id="nav-destacados" />
+                <label for="nav-destacados"><a href="#featured">Fot&oacute;grafos destacados</a></label>
                 <input type="radio" name="nav" id="nav-unirse" />
                 <label for="nav-unirse"><a href="#" data-modal="unirse">Unirse</a></label>
                 <div class="glass-glider"></div>
@@ -80,7 +80,7 @@
 </section>
 
 <!-- ════════════════ CAROUSEL ════════════════ -->
-<section class="carousel-section">
+<section class="carousel-section" id="especialidades">
     <div class="section-header">
         <span class="section-tag">Categor&iacute;as</span>
         <h2>Especialidades</h2>
@@ -109,44 +109,7 @@
         <h2>Fot&oacute;grafos <span class="gradient-text">destacados</span></h2>
         <p class="desc">Profesionales con los mejores portfolios del mes.</p>
     </div>
-    <div class="featured-grid">
-        <div class="featured-card reveal">
-            <div class="featured-img">
-                <img src="https://picsum.photos/id/64/600/800" alt="" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#2a1a1a,#111111)'">
-            </div>
-            <div class="featured-overlay">
-                <div class="featured-info">
-                    <h3>Sofia Mendoza</h3>
-                    <span>Retrato &bull; Moda</span>
-                    <div class="featured-stats"><span>&#9733; 4.9</span><span>32 proyectos</span></div>
-                </div>
-            </div>
-        </div>
-        <div class="featured-card reveal">
-            <div class="featured-img">
-                <img src="https://picsum.photos/id/177/600/800" alt="" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#1a1a1a,#111111)'">
-            </div>
-            <div class="featured-overlay">
-                <div class="featured-info">
-                    <h3>Mateo Herrera</h3>
-                    <span>Naturaleza &bull; Arquitectura</span>
-                    <div class="featured-stats"><span>&#9733; 4.8</span><span>27 proyectos</span></div>
-                </div>
-            </div>
-        </div>
-        <div class="featured-card reveal">
-            <div class="featured-img">
-                <img src="https://picsum.photos/id/1011/600/800" alt="" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#1a1a1a,#111111)'">
-            </div>
-            <div class="featured-overlay">
-                <div class="featured-info">
-                    <h3>Camila Vargas</h3>
-                    <span>Aventura &bull; Producto</span>
-                    <div class="featured-stats"><span>&#9733; 4.9</span><span>45 proyectos</span></div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="featured-grid" id="featuredGrid"></div>
 </section>
 
 <!-- ════════════════ CÓMO FUNCIONA ════════════════ -->
@@ -483,6 +446,70 @@
             <button class="btn-primary btn-glow" style="width:100%;justify-content:center;margin-top:1rem"><span>Crear cuenta</span></button>
             <p class="auth-foot">¿Ya tienes cuenta? <a href="#">Inicia sesi&oacute;n</a></p>
         </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-profile">
+    <div class="modal modal-profile-lg">
+        <button class="modal-close">&times;</button>
+        <div class="profile-layout" id="profileContent">
+            <div class="profile-left">
+                <div class="profile-portrait">
+                    <img id="profImg" src="" alt="">
+                </div>
+                <div class="profile-contact">
+                    <div class="prof-contact-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        <span id="profPhone"></span>
+                    </div>
+                    <div class="prof-contact-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <span id="profCity"></span>
+                    </div>
+                    <div class="prof-contact-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        <span id="profStudio"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="profile-right">
+                <span class="section-tag" id="profTag">Fot&oacute;grafo</span>
+                <h2 id="profName"></h2>
+                <div class="prof-specialties" id="profSpecialties"></div>
+                <p class="prof-bio" id="profBio"></p>
+                <div class="prof-meta">
+                    <div class="prof-meta-item">
+                        <span class="prof-meta-val" id="profRating"></span>
+                        <span class="prof-meta-label">Calificaci&oacute;n</span>
+                    </div>
+                    <div class="prof-meta-divider"></div>
+                    <div class="prof-meta-item">
+                        <span class="prof-meta-val" id="profProjects"></span>
+                        <span class="prof-meta-label">Proyectos</span>
+                    </div>
+                </div>
+                <div class="prof-gallery-section">
+                    <h4>Portafolio</h4>
+                    <div class="prof-gallery-grid" id="profGallery"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-lightbox">
+    <div class="lightbox-container">
+        <button class="lightbox-close">&times;</button>
+        <button class="lightbox-nav lightbox-prev" id="lbPrev">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="lightbox-nav lightbox-next" id="lbNext">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <div class="lightbox-image-wrap">
+            <img id="lbImage" src="" alt="">
+        </div>
+        <div class="lightbox-counter" id="lbCounter"></div>
     </div>
 </div>
 
